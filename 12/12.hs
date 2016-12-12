@@ -2,6 +2,8 @@
 {-# LANGUAGE LambdaCase       #-}
 {-# LANGUAGE TemplateHaskell  #-}
 
+import           Data.Array
+
 import           Control.Lens
 import           Control.Monad.Except
 import           Control.Monad.State
@@ -36,12 +38,16 @@ val = V <$> int <|> R <$> reg
 reg :: Parser Reg
 reg = oneOf "abcd"
 
-readProg :: String -> [Instr]
-readProg = map readInstr . lines
+readInstrs :: String -> [Instr]
+readInstrs = map readInstr . lines
   where
     readInstr s = case runParser instruction () "" s of
       Left err -> error (show err)
       Right i -> i
+
+----------------------------------------------------------------------
+-- First solution (overengineered)
+----------------------------------------------------------------------
 
 type M = ExceptT () (WriterT [String] (State ExecState))
 
@@ -64,8 +70,10 @@ data ExecState = ES
 
 makeLenses ''ExecState
 
+initMap = M.fromList ([(r,0)|r <- "abcd"])
+
 initState :: [Instr] -> ExecState
-initState (i:is) = ES (Z [] i is) (M.fromList ([(r,0)|r <- "abd"] ++ [('c',1)]))
+initState (i:is) = ES (Z [] i is) initMap
 
 interp :: [Instr] -> ([String], ExecState) -- ([String], M.Map Reg Int)
 interp is = (_1 %~ snd) $ runState (runWriterT (runExceptT (forever interp))) (initState is)
@@ -96,7 +104,42 @@ interp is = (_1 %~ snd) $ runState (runWriterT (runExceptT (forever interp))) (i
                   p' <- left p
                   prog .= p'
 
+----------------------------------------------------------------------
+-- The above works but it was way too overengineered.  I should have
+-- instead done something like the following, which is a lot less code
+-- and a lot faster to boot.
+----------------------------------------------------------------------
+
+type Prog = Array Int Instr
+
+readProg :: String -> Prog
+readProg s = listArray (0, length is - 1) is
+  where
+    is = readInstrs s
+
+exec :: Prog -> M.Map Char Int -> Int
+exec p = go 0
+  where
+    maxPC = snd $ bounds p
+    go pc m
+      | pc > maxPC = m M.! 'a'
+      | otherwise  = case (p ! pc) of
+          Cpy v r   -> go (pc+1) (M.insert r (value m v) m)
+          Inc r     -> go (pc+1) (M.adjust succ r m)
+          Dec r     -> go (pc+1) (M.adjust pred r m)
+          Jnz v1 v2 -> case (value m v1 /= 0) of
+                         True  -> go (pc + value m v2) m
+                         False -> go (pc+1) m
+    value _ (V v) = v
+    value m (R r) = fromJust $ M.lookup r m
+
 main = do
   p <- readProg <$> getContents
---  print $ interp p
-  print . (M.! 'a') . view mem . snd . interp $ p
+
+  -- solution 1
+  --  print $ interp p
+  --  print . (M.! 'a') . view mem . snd . interp $ p
+
+  -- solution 2
+  print $ exec p initMap
+  print $ exec p (M.insert 'c' 1 initMap)
