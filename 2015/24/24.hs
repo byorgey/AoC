@@ -1,3 +1,7 @@
+
+import           Data.List
+import           Data.Monoid
+import           Data.Ord
 import           Math.Combinat.Partitions.Set
 import           System.Environment
 
@@ -25,20 +29,24 @@ subsetsOfWeight w (x:xs)
   | x > w     = subsetsOfWeight w xs
   | otherwise = map (x:) (subsetsOfWeight (w-x) xs) ++ subsetsOfWeight w xs
 
--- We need to find combinations of subsets that are actually
--- partitions.  Again, probably unreasonable to do this by directly
--- considering subsets.  We need to adapt the subset generation to
--- actually generate partitions.
+threePartitionsOfWeight :: Int -> [Int] -> [[Int]]
+threePartitionsOfWeight w xs =
+  [ s1
+  | s1 <- subsetsOfWeight w xs
+  , not . null $ subsetsOfWeight w (xs \\ s1)
+  ]
 
-threePartitionsOfWeight :: Int -> [Int] -> [[[Int]]]
-threePartitionsOfWeight w = go w [] w [] w []
-  where
-    go 0 xs 0 ys 0 zs _ = [[xs,ys,zs]]
-    go _ _  _ _  _ _ []  = []
-    go wx xs wy ys wz zs (a:as) = undefined
+fourPartitionsOfWeight :: Int -> [Int] -> [[Int]]
+fourPartitionsOfWeight w xs =
+  [ s1
+  | s1 <- subsetsOfWeight w xs
+  , any (\s2 -> not . null $ subsetsOfWeight w ((xs \\ s1) \\ s2)) $ subsetsOfWeight w (xs \\ s1)
+  ]
 
 main = do
   items <- (map read . lines) <$> getContents
   let totalWeight = sum items
-  print . length $ subsetsOfWeight (totalWeight `div` 3) items
+  print . product . head . sortBy (comparing length <> comparing product) $ threePartitionsOfWeight (totalWeight `div` 3) items
+
+  print . product . head . sortBy (comparing length <> comparing product) $ fourPartitionsOfWeight (totalWeight `div` 4) items
 
