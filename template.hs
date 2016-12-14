@@ -1,6 +1,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE LambdaCase       #-}
 {-# LANGUAGE TemplateHaskell  #-}
+{-# LANGAUGE ViewPatterns #-}
 
 import           Control.Applicative
 import           Control.Arrow
@@ -46,6 +47,11 @@ bfs isGoal next start = bfs' S.empty start
         where
           layer' = (foldMap next layer) `S.difference` seen'
           seen' = S.union seen layer
+
+choose :: Int -> [a] -> [[a]]
+choose 0 _      = [[]]
+choose _ []     = []
+choose k (x:xs) = map (x:) (choose (k-1) xs) ++ choose k xs
 
 readParser :: Parser a -> String -> a
 readParser p s = case runParser p () "" s of
