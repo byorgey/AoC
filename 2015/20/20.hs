@@ -2,6 +2,7 @@
 
 import           Control.Arrow
 import           Data.Bits
+import           Data.IntSet                           (elems)
 import           Data.List
 import           Data.MemoTrie
 import qualified Math.NumberTheory.ArithmeticFunctions as NT
@@ -29,7 +30,11 @@ main = do
 -- Sigh, in the end the right answer was just using a properly
 -- optimized library.
 
--- Hmm, part b seems trickier.
+  print (find ((>= 29000000) . elfValue2) [1 :: Int .. 29000000])
+
+elfValue2 n = 11 * (NT.sigma 1 n - sum (takeWhile (\d -> n `div` d > 50) (elems (NT.divisorsSmall n))))
+
+-- Notes from earlier attempts:
 
 ------------------------------------------------------------
 -- Looking for smallest n such that sigma(n) = 2900000.
