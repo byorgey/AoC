@@ -1,7 +1,6 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE LambdaCase       #-}
 {-# LANGUAGE TemplateHaskell  #-}
-{-# LANGAUGE ViewPatterns #-}
 
 import           Control.Applicative
 import           Control.Arrow
