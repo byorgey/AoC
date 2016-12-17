@@ -7,18 +7,21 @@ import           Control.Arrow
 import           Control.Lens
 import           Control.Monad.State
 import           Control.Monad.Writer
+import           Crypto.Hash.MD5        (hash)
 import           Data.Bits
+import           Data.ByteString.Base16 (encode)
+import           Data.ByteString.Char8  (pack, unpack)
 import           Data.Char
 import           Data.Function
 import           Data.List
 import           Data.List.Split
-import qualified Data.Map             as M
+import qualified Data.Map               as M
 import           Data.Maybe
 import           Data.Ord
-import qualified Data.Set             as S
+import qualified Data.Set               as S
 import           Data.Tuple
 import           System.Environment
-import           Text.Parsec          hiding (State)
+import           Text.Parsec            hiding (State)
 import           Text.Parsec.String
 import           Text.Printf
 
