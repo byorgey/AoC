@@ -50,6 +50,15 @@ bfs isGoal next start = bfs' S.empty start
           layer' = (foldMap next layer) `S.difference` seen'
           seen' = S.union seen layer
 
+dfs :: Ord a => (a -> Bool) -> (a -> S.Set a) -> a -> [[a]]
+dfs winning fnext start = dfs' S.empty [start] start
+  where
+    dfs' visited path cur
+      | winning cur = [path]
+      | otherwise = concatMap (\n -> dfs' (S.insert n visited) (n:path) n) next
+        where
+          next = fnext cur
+
 choose :: Int -> [a] -> [[a]]
 choose 0 _      = [[]]
 choose _ []     = []
