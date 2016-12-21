@@ -1,0 +1,91 @@
+Al => ThF
+Al => ThRnFAr
+B => BCa
+B => TiB
+B => TiRnFAr
+Ca => CaCa
+Ca => PB
+Ca => PRnFAr
+Ca => SiRnFYFAr
+Ca => SiRnMgAr
+Ca => SiTh
+F => CaF
+F => PMg
+F => SiAl
+H => CRnAlAr
+H => CRnFYFYFAr
+H => CRnFYMgAr
+H => CRnMgYFAr
+H => HCa
+H => NRnFYFAr
+H => NRnMgAr
+H => NTh
+H => OB
+H => ORnFAr
+Mg => BF
+Mg => TiMg
+N => CRnFAr
+N => HSi
+O => CRnFYFAr
+O => CRnMgAr
+O => HP
+O => NRnFAr
+O => OTi
+P => CaP
+P => PTi
+P => SiRnFAr
+Si => CaSi
+Th => ThCa
+Ti => BP
+Ti => TiTi
+e => HF
+e => NAl
+e => OMg
+
+C(Si(CaPTiMg|CaPTi(F)SiThF)CaSiThSiThPBCaCaSi(Si(TiTiMg)PBCaPMg|PTi(F)F)CaSi(BPMg)P(CaPTi(F)CaSiThCaCaF)PBCaCaPTiTi(F)CaSi(SiAl|SiTh(F))CaSi(BF)CaCaSi(SiThCaCaCaF|CaPTiBCaSiThCaSiThPMg)Si(CaPBF|CaCaF)CaCaCaCaSiThCaSi(P(F)PBSiThP(F)Si(Mg)CaF|F)CaSi(SiAl)TiTiTiTiTiTiTi(PMg)PTiTiTiBSi(SiAl)TiTi(PMg)CaF|BPBPTi(Si(Mg)SiThCaF)CaSiThF)P(F)CaSi(TiBSiThSi(SiAl|CaF)P(F)SiThCaF)CaCaSiThCaCaCaSi(P(CaF)F|PMg)CaPBCaPBSi(F|PBCaF)CaSiAl
+
+
+C(RnSi(RnCaPTiMg|CaPTi(RnFAr)SiThFAr)CaSiThSiThPBCaCaSi(RnSi(RnTiTiMgAr)PBCaPMgYPTi(RnFAr)FAr)CaSi(RnBPMgAr)P(RnCaPTi(RnFAr)CaSiThCaCaFAr)PBCaCaPTiTi(RnFAr)CaSi(RnFYSiTh(RnFAr)Ar)CaSi(RnBFAr)CaCaSi(RnSiThCaCaCaFYCaPTiBCaSiThCaSiThPMgAr)Si(RnCaPBFYCaCaFAr)CaCaCaCaSiThCaSi(RnP(RnFAr)PBSiThP(RnFAr)Si(RnMgAr)CaFYFAr)CaSi(RnFAr)TiTiTiTiTiTiTi(RnFAr)PTiTiTiBSi(RnFAr)TiTi(RnFAr)CaFYBPBPTi(RnSi(RnMgAr)SiThCaFAr)CaSiThFAr)P(RnFAr)CaSi(RnTiBSiThSi(RnFYCaFAr)P(RnFAr)SiThCaFAr)CaCaSiThCaCaCaSi(RnP(RnFAr)FYPMgAr)CaPBCaPBSi(RnFYPBCaFAr)CaSiAl
+
+SiAl could come from
+  1. F -> SiAl
+  2. NAl -> HSiAl  -- in this case can't have Rn right before Si
+RnCaFAr has to come via
+  RnFAr -> RnCaFAr
+
+Only things that put P first are
+  Ca => PB
+  Ca => PRnFAr
+  F => PMg
+
+so RnFAr -> RnPMgAr
+
+  each rule has to expand by at least 1 so has to be F -> PMg
+
+Lots of RnFAr, preceded by a single element
+
+Note Y is a terminal.  Terminals are C, Y, Rn, Ar.
+
+First & Last sets:
+
+Al -> [Al Th]     [Al Ar F Mg]
+B  -> [B Ti]      [Ar B Ca Th]
+Ca -> [Ca P Si]   [Ar B Ca Th]
+F  -> [Ca F P Si] [Al Ar F Mg]
+H  -> [C H N O]   [Ar B Ca H Th]
+Mg -> [B Mg Ti]   [Al Ar F Mg]
+N  -> [C H N O]   [Ar N Si]
+O  -> [C H N O]   [Ar O P Ti]
+P  -> [Ca P Si]   [Ar P Ti]
+Si -> [Ca P Si]   [Si]
+Th -> [Th]        [Ar B Ca Th]
+Ti -> [B Ti]      [Ar P Ti]
+e  -> [C H N O e] [Al Ar F Mg e]
+
+
+  Al -> Th   | Ar,F,Mg
+  B  -> Ti   | Ar,Ca,Th
+  Ca -> P,Si | Ar,B,Th
+
+
+  HNO -> CHNO | ...
