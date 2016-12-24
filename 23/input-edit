@@ -1,0 +1,54 @@
+cpy a b
+dec b          b := a - 1
+               {
+cpy a d          d := a
+
+  cpy 0 a        a := 0
+
+                 do {
+
+  cpy b c          c := b;
+
+                   do {
+  inc a              a++;
+  dec c              c--;
+  jnz c -2         } while (c /= 0);       // a += c
+  dec d            d--;
+  jnz d -5       } while (d /= 0);         // a *= c
+
+  dec b          b--;
+  cpy b c        c := b;
+  cpy c d        d := b;
+
+                 do {
+  dec d            d--;
+  inc c            c++;
+  jnz d -2       } while (d /= 0);    // c += d;
+tgl c                                 // c = 2*b
+cpy -16 c
+jnz 1 c        }   // so a becomes  a*(a-1)*(a-2)*(a-3)* ...  = a!
+cpy 80 c           // every other instruction after tgl c ends up getting toggled.
+jnz 97 d           // kicks out of loop when b = 1.
+inc a
+inc d
+jnz d -2
+inc c
+jnz c -5
+
+
+--->
+
+tgl c
+cpy -16 c
+cpy 1 c
+cpy 80 c       c := 80
+               do {
+cpy 97 d         d := 97
+                 do {
+inc a              a++
+dec d              d--
+jnz d -2         } while (d /= 0);   // a += 97;
+dec c            c--;
+jnz c -5       } while (c /= 0);   // a = a + 97*80;
+
+Hence final value is a! + 97*80.  For a=12, 479009360.
