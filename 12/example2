@@ -1,5 +1,0 @@
-cpy 1 a
-cpy 5 b
-inc a
-dec b
-jnz b -2
