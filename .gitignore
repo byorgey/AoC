@@ -20,6 +20,8 @@ TAGS
 *.dyn_hi
 *.dyn_o
 
+*.class
+
 01/01
 02/02
 03/03
