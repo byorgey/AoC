@@ -4,7 +4,10 @@
 {-# LANGUAGE TupleSections    #-}
 
 import           Control.Arrow
+import Data.Function
 import Data.Maybe
+import Data.Ord
+import Data.List
 import           Data.Map (Map, (!))
 import qualified Data.Map               as M
 import           Text.Parsec            hiding (State)
@@ -13,7 +16,6 @@ import           Data.Tree
 
 data Prog = Prog { nodeName :: String, weight :: Int, children :: [String] }
 
-Part 1
 main = do
   s <- getContents
   let nodes = (lines >>> map readProg) s
@@ -22,7 +24,7 @@ main = do
       root  = getRoot pMap
       t     = buildTree root nMap
   putStrLn $ "Root: " ++ root
-  putStrLn $ "Fixed weight: " ++ findFixedWeight t
+  putStrLn $ "Fixed weight: " ++ show (findFixedWeight t)
 
 readProg :: String -> Prog
 readProg = readParser parseProg
@@ -51,15 +53,27 @@ getWeight (Node (w,_) _) = w
 buildTree :: String -> Map String Prog -> Tree (Int, String)
 buildTree root nMap = go root
   where
-    go n = Node (weight n + map getWeight cs, nodeName n) cs
+    go nstr = Node (weight n, nodeName n) cs
       where
+        n  = nMap ! nstr
         cs = map go (children n)
 
-findFixedWeight :: Tree (Int, String) -> Int
-findFixedWeight = go Nothing
-  where
-    go Nothing (Node _ cs) = undefined
+findFixedWeight :: Tree (Int, String) -> Either Int Int  -- Left = fixed weight, Right = total weight
+findFixedWeight (Node (w,_) []) = Right w
+findFixedWeight (Node (w,_) cs) = do
+  ws <- mapM findFixedWeight cs
+  case checkWeights (zip ws cs) of
+    Nothing -> Right (w + sum ws)
+    Just (w, c) -> Left (getWeight c + w)
 
+infixl 0 >$>
+(>$>) = flip ($)
+
+checkWeights :: [(Int, Tree (Int, String))] -> Maybe (Int, Tree (Int, String))
+checkWeights wcs = case wcs >$> sortBy (comparing fst) >>> groupBy ((==) `on` fst) >>> sortBy (comparing length) of
+  [_] -> Nothing
+  [[(badW,badC)], ((goodW,_):_)] -> Just (goodW - badW, badC)
+  c -> error (show c)
 ------------------------------------------------------------
 
 readParser :: Parser a -> String -> a
