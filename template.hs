@@ -31,11 +31,12 @@ data Thing = Thing
 readThing :: String -> Thing
 readThing _ = Thing
 
-main = do
-  args <- getArgs
-  x <- readThing <$> getContents
+main = interact $
+  readThing >>> applyAll [solveA] >>> map show >>> unlines
 
-  print x
+solveA, solveB :: Thing -> _
+solveA = undefined
+solveB = undefined
 
 ------------------------------------------------------------
 -- Utilities
@@ -64,15 +65,8 @@ choose 0 _      = [[]]
 choose _ []     = []
 choose k (x:xs) = map (x:) (choose (k-1) xs) ++ choose k xs
 
-readParser :: Parser a -> String -> a
-readParser p s = case runParser p () "" s of
-  Left err -> error (show err)
-  Right a  -> a
+count :: (a -> Bool) -> [a] -> Int
+count p = filter p >>> length
 
-int :: Parser Int
-int = read <$> many1 digit
-
-type Loc = (Int,Int)
-
-addLoc :: Loc -> Loc -> Loc
-addLoc (x1,y1) (x2,y2) = (x1+x2, y1+y2)
+applyAll :: [a -> b] -> a -> [b]
+applyAll fs a = map ($a) fs
