@@ -1,42 +1,43 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE LambdaCase       #-}
-{-# LANGUAGE TemplateHaskell  #-}
+{-# LANGUAGE RecordWildCards  #-}
 
 import           Control.Applicative
 import           Control.Arrow
 import           Control.Lens
 import           Control.Monad.State
 import           Control.Monad.Writer
-import           Crypto.Hash.MD5        (hash)
 import           Data.Bits
-import           Data.ByteString.Base16 (encode)
-import           Data.ByteString.Char8  (pack, unpack)
 import           Data.Char
 import           Data.Function
 import           Data.List
 import           Data.List.Split
-import qualified Data.Map               as M
+import           Data.Map             (Map, (!))
+import qualified Data.Map             as M
 import           Data.Maybe
 import           Data.Ord
-import qualified Data.Set               as S
+import           Data.Set             (Set)
+import qualified Data.Set             as S
 import           Data.Tuple
-import           System.Environment
-import           Text.Parsec            hiding (State)
+import           Text.Parsec          hiding (State)
 import           Text.Parsec.String
 import           Text.Printf
 
-data Thing = Thing
-  deriving Show
-
-readThing :: String -> Thing
-readThing _ = Thing
+import           Debug.Trace
 
 main = interact $
-  readThing >>> applyAll [solveA] >>> map show >>> unlines
+  readInput >>> applyAll [solveA] >>> map show >>> unlines
 
-solveA, solveB :: Thing -> _
-solveA = undefined
-solveB = undefined
+type Input = ()
+
+readInput :: String -> Input
+readInput = lines >>> _
+
+type Output = Int
+
+solveA, solveB :: Input -> Output
+solveA = const 0
+solveB = const 0
 
 ------------------------------------------------------------
 -- Utilities
@@ -70,3 +71,6 @@ count p = filter p >>> length
 
 applyAll :: [a -> b] -> a -> [b]
 applyAll fs a = map ($a) fs
+
+infixr 0 >$>
+(>$>) = flip ($)
