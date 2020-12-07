@@ -1,10 +1,10 @@
 import           Control.Arrow
 import           Data.List
 import           Data.List.Split
-import qualified Data.Set        as S
-
 import           Data.Map        (Map, (!))
 import qualified Data.Map        as M
+import qualified Data.Set        as S
+import           Text.Printf
 
 import           Debug.Trace
 
@@ -48,3 +48,21 @@ countMap rules = c
 
 count p = filter p >>> length
 applyAll fs x = map ($x) fs
+
+-- Just for fun
+
+formatGraph :: [Rule] -> String
+formatGraph rules = unlines $
+  [ "digraph g {"
+  , "  rankdir=LR;"
+  , "  node [shape=box];"
+  ]
+  ++
+  concatMap mkEdges rules
+  ++
+  [ "}" ]
+  where
+    mkEdges (Rule b bs) = map (mkEdge b) bs
+    mkEdge b1 (b2,n) = printf "\"%s\" -> \"%s\" [ label = \"%d\" ];" (format b1) (format b2) n
+    format (x,y) = unwords [x,y]
+

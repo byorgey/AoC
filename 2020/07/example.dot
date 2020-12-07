@@ -1,0 +1,16 @@
+digraph g {
+  node [shape=box];
+"light red" -> "bright white" [ label = "1" ];
+"light red" -> "muted yellow" [ label = "2" ];
+"dark orange" -> "bright white" [ label = "3" ];
+"dark orange" -> "muted yellow" [ label = "4" ];
+"bright white" -> "shiny gold" [ label = "1" ];
+"muted yellow" -> "shiny gold" [ label = "2" ];
+"muted yellow" -> "faded blue" [ label = "9" ];
+"shiny gold" -> "dark olive" [ label = "1" ];
+"shiny gold" -> "vibrant plum" [ label = "2" ];
+"dark olive" -> "faded blue" [ label = "3" ];
+"dark olive" -> "dotted black" [ label = "4" ];
+"vibrant plum" -> "faded blue" [ label = "5" ];
+"vibrant plum" -> "dotted black" [ label = "6" ];
+}
