@@ -7,6 +7,7 @@ import           Control.Arrow
 import           Control.Lens
 import           Control.Monad.State
 import           Control.Monad.Writer
+import           Data.Array
 import           Data.Bits
 import           Data.Char
 import           Data.Function
@@ -26,7 +27,7 @@ import           Text.Printf
 import           Debug.Trace
 
 main = interact $
-  readInput >>> applyAll [solveA] >>> map show >>> unlines
+  readInput >>> applyAll [solveA,solveB] >>> map show >>> unlines
 
 type Input = ()
 
@@ -70,7 +71,11 @@ count :: (a -> Bool) -> [a] -> Int
 count p = filter p >>> length
 
 applyAll :: [a -> b] -> a -> [b]
-applyAll fs a = map ($a) fs
+applyAll fs a = map ($ a) fs
+
+onHead :: (a -> a) -> [a] -> [a]
+onHead _ []     = []
+onHead f (a:as) = f a : as
 
 infixr 0 >$>
 (>$>) = flip ($)
