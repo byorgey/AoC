@@ -1,6 +1,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE LambdaCase       #-}
 {-# LANGUAGE RecordWildCards  #-}
+{-# LANGUAGE TupleSections    #-}
 
 import           Control.Applicative
 import           Control.Arrow
@@ -61,6 +62,10 @@ dfs winning fnext start = dfs' S.empty [start] start
       | otherwise = concatMap (\n -> dfs' (S.insert n visited) (n:path) n) next
         where
           next = fnext cur
+
+pairs :: [a] -> [(a,a)]
+pairs []     = []
+pairs (x:xs) = map (x,) xs ++ pairs xs
 
 choose :: Int -> [a] -> [[a]]
 choose 0 _      = [[]]
