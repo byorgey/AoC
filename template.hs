@@ -84,3 +84,12 @@ onHead f (a:as) = f a : as
 
 infixr 0 >$>
 (>$>) = flip ($)
+
+toTable :: Ix i => (i, i) -> (i -> a) -> Array i a
+toTable rng f = array rng (map (id &&& f) (range rng))
+
+memo :: Ix i => (i,i) -> (i -> a) -> (i -> a)
+memo rng = (!) . toTable rng
+
+memoFix :: Ix i => (i,i) -> ((i -> a) -> (i -> a)) -> (i -> a)
+memoFix rng f = fix (memo rng . f)
