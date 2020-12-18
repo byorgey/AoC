@@ -93,3 +93,5 @@ memo rng = (!) . toTable rng
 
 memoFix :: Ix i => (i,i) -> ((i -> a) -> (i -> a)) -> (i -> a)
 memoFix rng f = fix (memo rng . f)
+
+readParser p = parse p "" >>> either undefined id
