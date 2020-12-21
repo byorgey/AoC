@@ -33,57 +33,6 @@ readTile (n:g) = Tile (read (filter isDigit n)) (map (map (=='#')) g)
 
 type Output = Int
 
-------------------------------------------------------------
-
--- Use the minimum of an edge and its reverse as the canonical
--- representative for that edge pattern.
-normalize :: Edge -> Edge
-normalize e = minimum [e, reverse e]
-
--- Generate the list of normalized representatives for the edges of a tile.
-normalized :: Tile -> [Edge]
-normalized (Tile _ g) = map normalize [head g, last g, head g', last g']
-  where
-    g' = transpose g
-
--- Make a dictionary from edge representatives to tiles containing
--- that edge.
-type EdgeMap = Map Edge [Tile]
-
-mkEdgeMap :: Input -> EdgeMap
-mkEdgeMap = map (\t -> map (,[t]) (normalized t)) >>> concat >>> M.fromListWith (++)
-
-isCorner :: EdgeMap -> Tile -> Bool
-isCorner e t = count (isUnmatched e) (normalized t) == 2
-
-isUnmatched :: EdgeMap -> Edge -> Bool
-isUnmatched edgeMap = normalize >>> (edgeMap #!) >>> length >>> (==1)
-
-------------------------------------------------------------
--- Part A
-
-type Edge = [Bool]
-
--- The input has the special property that every possible edge pattern
--- occurs on exactly 1 or 2 tiles.  So just identify the four tiles
--- that have two edge patterns that occur only once; those have to be
--- the corners.  Kind of cheating but not really: taking special
--- structure of the input into account is part of the game!
-
-solveA :: Input -> Output
-solveA ts = ts >$> filter (isCorner edgeMap) >>> map tileID >>> product
-  where
-    edgeMap = mkEdgeMap ts
-
-------------------------------------------------------------
--- Part B
-
--- As I suspected, for Part B we can't get away so easily. But given
--- the uniqueness of the edges we can just pick an arbitrary corner to
--- start with, and proceed with matching up edges.  The tricky part is
--- finding the correct orientation of each tile, but for that we can
--- just try every possible orientation and find the one that matches.
-
 -- Orientable things -----------------------------
 
 class Orientable t where
@@ -106,6 +55,55 @@ bottom (Tile _ g) = last g
 left   (Tile _ g) = head (transpose g)
 right  (Tile _ g) = last (transpose g)
 top    (Tile _ g) = head g
+
+-- Edges -----------------------------------------
+
+type Edge = [Bool]
+
+-- Use the minimum of an edge and its reverse as the canonical
+-- representative for that edge pattern.
+normalize :: Edge -> Edge
+normalize e = minimum [e, reverse e]
+
+-- Generate the list of normalized representatives for the edges of a tile.
+normalized :: Tile -> [Edge]
+normalized t = map (normalize.($t)) [top,right,left,bottom]
+
+-- Make a dictionary from edge representatives to tiles containing
+-- that edge.
+type EdgeMap = Map Edge [Tile]
+
+mkEdgeMap :: Input -> EdgeMap
+mkEdgeMap = concatMap (\t -> map (,[t]) (normalized t)) >>> M.fromListWith (++)
+
+isCorner :: EdgeMap -> Tile -> Bool
+isCorner e t = count (isUnmatched e) (normalized t) == 2
+
+isUnmatched :: EdgeMap -> Edge -> Bool
+isUnmatched edgeMap = normalize >>> (edgeMap #!) >>> length >>> (==1)
+
+------------------------------------------------------------
+-- Part A
+
+-- The input has the special property that every possible edge pattern
+-- occurs on exactly 1 or 2 tiles.  So just identify the four tiles
+-- that have two edge patterns that occur only once; those have to be
+-- the corners.  Kind of cheating but not really: taking special
+-- structure of the input into account is part of the game!
+
+solveA :: Input -> Output
+solveA ts = ts >$> filter (isCorner edgeMap) >>> map tileID >>> product
+  where
+    edgeMap = mkEdgeMap ts
+
+------------------------------------------------------------
+-- Part B
+
+-- As I suspected, for Part B we can't get away so easily. But given
+-- the uniqueness of the edges we can just pick an arbitrary corner to
+-- start with, and proceed with matching up edges.  The tricky part is
+-- finding the correct orientation of each tile, but for that we can
+-- just try every possible orientation and find the one that matches.
 
 -- TileGrids -------------------------------------
 
