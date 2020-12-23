@@ -6,23 +6,23 @@
 import           Control.Applicative
 import           Control.Arrow
 import           Control.Lens
-import           Control.Monad.State
-import           Control.Monad.Writer
-import           Data.Array
+-- import           Control.Monad.State
+-- import           Control.Monad.Writer
+-- import           Data.Array
 import           Data.Bits
 import           Data.Char
 import           Data.Function
 import           Data.List
 import           Data.List.Split
-import           Data.Map             (Map, (!))
-import qualified Data.Map             as M
+import           Data.Map            (Map, (!))
+import qualified Data.Map            as M
 import           Data.Maybe
 import           Data.Ord
-import           Data.Set             (Set)
-import qualified Data.Set             as S
+import           Data.Set            (Set)
+import qualified Data.Set            as S
 import           Data.Tuple
-import           Text.Parsec          hiding (State)
-import           Text.Parsec.String
+-- import           Text.Parsec          hiding (State)
+-- import           Text.Parsec.String
 import           Text.Printf
 
 import           Debug.Trace
@@ -82,16 +82,19 @@ onHead :: (a -> a) -> [a] -> [a]
 onHead _ []     = []
 onHead f (a:as) = f a : as
 
+find' :: (a -> Bool) -> [a] -> a
+find' p = find p >>> fromJust
+
 infixr 0 >$>
 (>$>) = flip ($)
 
-toTable :: Ix i => (i, i) -> (i -> a) -> Array i a
-toTable rng f = array rng (map (id &&& f) (range rng))
+-- toTable :: Ix i => (i, i) -> (i -> a) -> Array i a
+-- toTable rng f = array rng (map (id &&& f) (range rng))
 
-memo :: Ix i => (i,i) -> (i -> a) -> (i -> a)
-memo rng = (!) . toTable rng
+-- memo :: Ix i => (i,i) -> (i -> a) -> (i -> a)
+-- memo rng = (!) . toTable rng
 
-memoFix :: Ix i => (i,i) -> ((i -> a) -> (i -> a)) -> (i -> a)
-memoFix rng f = fix (memo rng . f)
+-- memoFix :: Ix i => (i,i) -> ((i -> a) -> (i -> a)) -> (i -> a)
+-- memoFix rng f = fix (memo rng . f)
 
-readParser p = parse p "" >>> either undefined id
+-- readParser p = parse p "" >>> either undefined id
