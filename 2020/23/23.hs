@@ -62,7 +62,8 @@ sequenceAfter x (Game{..}) = x >$> iterate (cups!) >>> drop 1 >>> takeWhile (/= 
 
 ------------------------------------------------------------
 
--- Takes ~60s on my laptop.
+-- Takes ~60s on my laptop.  Would probably be faster to use a mutable
+-- array instead of stepping an IntMap.
 solveB :: Input -> Output
 solveB = runGame 1000000 >>> (!!10000000) >>> nextCups >>> show
   where
