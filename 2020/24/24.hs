@@ -1,10 +1,10 @@
 import           Control.Arrow
 import           Data.List
-import           Data.Map      (Map)
-import qualified Data.Map      as M
+import           Data.Map        (Map)
+import qualified Data.Map.Strict as M
 import           Data.Maybe
-import           Data.Set      (Set)
-import qualified Data.Set      as S
+import           Data.Set        (Set)
+import qualified Data.Set        as S
 
 main = interact $
   readInput >>> applyAll [solveA,solveB] >>> map show >>> unlines
@@ -53,7 +53,7 @@ zeroT = [0,0,0]
 
 blackTiles :: Input -> [T]
 blackTiles = map (map toT >>> foldl' addT zeroT) >>>
-  sort >>> group >>> filter (length >>> odd) >>> map head
+  cardinality >>> M.filter odd >>> M.keys
 
 neighbors :: T -> [T]
 neighbors t = map (toT >>> addT t) [E .. NE]
@@ -62,14 +62,14 @@ step :: Set T -> Set T
 step g = newBlack `S.union` oldBlack
   where
     -- The number of black neighbors of each tile
-    nbrs :: [(T, Int)]
-    nbrs = S.elems g >$> concatMap neighbors >>> sort >>> group >>> map (head &&& length)
+    nbrs :: Map T Int
+    nbrs = S.elems g >$> concatMap neighbors >>> cardinality
 
     -- Tiles that become (or stay) black because they have exactly 2 black neighbors
-    newBlack = S.fromList (filter (snd >>> (==2)) nbrs >$> map fst)
+    newBlack = nbrs >$> M.filter (==2) >>> M.keysSet
 
     -- Tiles that stay black because they were black before and have 1 or 2 black neighbors
-    oldBlack = g `S.intersection` S.fromList (filter (snd >>> (`elem` [1,2])) nbrs >$> map fst)
+    oldBlack = g `S.intersection` (nbrs >$> M.filter (`elem` [1,2]) >>> M.keysSet)
 
 ------------------------------------------------------------
 
@@ -81,3 +81,6 @@ applyAll fs a = map ($ a) fs
 
 infixr 0 >$>
 (>$>) = flip ($)
+
+cardinality :: Ord a => [a] -> Map a Int
+cardinality = map (\x -> (x,1)) >>> M.fromListWith (+)

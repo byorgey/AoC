@@ -15,7 +15,7 @@ import           Data.Function
 import           Data.List
 import           Data.List.Split
 import           Data.Map            (Map, (!))
-import qualified Data.Map            as M
+import qualified Data.Map.Strict     as M
 import           Data.Maybe
 import           Data.Ord
 import           Data.Set            (Set)
@@ -74,6 +74,9 @@ choose k (x:xs) = map (x:) (choose (k-1) xs) ++ choose k xs
 
 count :: (a -> Bool) -> [a] -> Int
 count p = filter p >>> length
+
+cardinality :: Ord a => [a] -> Map a Int
+cardinality = map (,1) >>> M.fromListWith (+)
 
 applyAll :: [a -> b] -> a -> [b]
 applyAll fs a = map ($ a) fs
