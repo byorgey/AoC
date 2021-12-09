@@ -48,6 +48,7 @@ bfs :: Ord a => (a -> Bool) -> (a -> S.Set a) -> S.Set a -> [S.Set a]
 bfs isGoal next start = bfs' S.empty start
   where
     bfs' seen layer
+      | S.null layer     = []
       | any isGoal layer = [layer]
       | otherwise = layer : bfs' seen' layer'
         where
