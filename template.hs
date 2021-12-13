@@ -1,3 +1,6 @@
+#!/usr/bin/env stack
+-- stack --resolver lts-18.18 script
+
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE LambdaCase       #-}
 {-# LANGUAGE RecordWildCards  #-}
@@ -5,7 +8,7 @@
 
 import           Control.Applicative
 import           Control.Arrow
-import           Control.Lens
+-- import           Control.Lens
 -- import           Control.Monad.State
 -- import           Control.Monad.Writer
 -- import           Data.Array
