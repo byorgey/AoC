@@ -32,9 +32,9 @@ readInput :: String -> Packet
 readInput = expandHex >>> parse parsePacket "" >>> either undefined id
 
 expandHex :: String -> String
-expandHex = concatMap (expandHexDigit >>> printf "%04b")
+expandHex = concatMap (readHexDigit >>> printf "%04b")
   where
-    expandHexDigit d
+    readHexDigit d
       | '0' <= d && d <= '9' = ord d - ord '0'
       | otherwise            = 10 + ord d - ord 'A'
 
