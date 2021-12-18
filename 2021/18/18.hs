@@ -104,14 +104,14 @@ exhaust f = go
 explode :: Number -> Maybe Number
 explode = fmap doExplosion . findExploder 0 . open
   where
-    findExploder :: Int -> Zipper -> Maybe Zipper
+    findExploder :: Int -> Zipper -> Maybe (Int, Int, [Tooth])
     findExploder _ (focus -> Regular _) = Nothing
-    findExploder !n z@(focus -> Pair (Regular {}) (Regular {}))
-      | n >= 4 = Just z
+    findExploder !n (Pair (Regular l) (Regular r) :< ts)
+      | n >= 4 = Just (l, r, ts)
     findExploder n z = findExploder (n+1) (left z) <|> findExploder (n+1) (right z)
 
-    doExplosion :: Zipper -> Number
-    doExplosion z@(Pair (Regular l) (Regular r) :< ts) = rezip (Just l) (Just r) (Regular 0 :< ts)
+    doExplosion :: (Int, Int, [Tooth]) -> Number
+    doExplosion (l, r, ts) = rezip (Just l) (Just r) (Regular 0 :< ts)
 
     rezip :: Maybe Int -> Maybe Int -> Zipper -> Number
     rezip _ _ (n :< []) = n
