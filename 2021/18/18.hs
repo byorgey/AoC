@@ -51,24 +51,24 @@ parseNumber
 ------------------------------------------------------------
 -- Number zipper
 
-data Tooth = L Number | R Number deriving (Eq, Show)
-data Zipper = Number :< [Tooth]
+data Sibling = L Number | R Number deriving (Eq, Show)
+data Zipper = Number :< [Sibling]
 
 open :: Number -> Zipper
 open n = n :< []
 
 left :: Zipper -> Zipper
 left z@(Regular{} :< _) = z
-left (Pair l r :< ts)   = l :< (R r : ts)
+left (Pair l r :< ss)   = l :< (R r : ss)
 
 right :: Zipper -> Zipper
 right z@(Regular{} :< _) = z
-right (Pair l r :< ts)   = r :< (L l : ts)
+right (Pair l r :< ss)   = r :< (L l : ss)
 
 up :: Zipper -> Zipper
 up (n :< [])         = n :< []
-up (n :< (L l : ts)) = Pair l n :< ts
-up (n :< (R r : ts)) = Pair n r :< ts
+up (n :< (L l : ss)) = Pair l n :< ss
+up (n :< (R r : ss)) = Pair n r :< ss
 
 focus :: Zipper -> Number
 focus (n :< _) = n
@@ -104,19 +104,19 @@ exhaust f = go
 explode :: Number -> Maybe Number
 explode = fmap doExplosion . findExploder 0 . open
   where
-    findExploder :: Int -> Zipper -> Maybe (Int, Int, [Tooth])
+    findExploder :: Int -> Zipper -> Maybe (Int, Int, [Sibling])
     findExploder _ (focus -> Regular _) = Nothing
-    findExploder !n (Pair (Regular l) (Regular r) :< ts)
-      | n >= 4 = Just (l, r, ts)
+    findExploder !n (Pair (Regular l) (Regular r) :< ss)
+      | n >= 4 = Just (l, r, ss)
     findExploder n z = findExploder (n+1) (left z) <|> findExploder (n+1) (right z)
 
-    doExplosion :: (Int, Int, [Tooth]) -> Number
-    doExplosion (l, r, ts) = rezip (Just l) (Just r) (Regular 0 :< ts)
+    doExplosion :: (Int, Int, [Sibling]) -> Number
+    doExplosion (l, r, ss) = rezip (Just l) (Just r) (Regular 0 :< ss)
 
     rezip :: Maybe Int -> Maybe Int -> Zipper -> Number
     rezip _ _ (n :< []) = n
-    rezip (Just l) r (n :< (L tl : ts)) = rezip Nothing r (Pair (onRightmost (+l) tl) n :< ts)
-    rezip l (Just r) (n :< (R tr : ts)) = rezip l Nothing (Pair n (onLeftmost (+r) tr) :< ts)
+    rezip (Just l) r (n :< (L tl : ss)) = rezip Nothing r (Pair (onRightmost (+l) tl) n :< ss)
+    rezip l (Just r) (n :< (R tr : ss)) = rezip l Nothing (Pair n (onLeftmost (+r) tr) :< ss)
     rezip l r z = rezip l r (up z)
 
 split :: Number -> Maybe Number
