@@ -86,8 +86,8 @@ next depth (Burrow b) = concatMap goHome hallwayIxs ++ concatMap moveOut roomIxs
         then [Burrow (M.insert i [] . M.adjust (a:) (home a) $ b)]
         else []
     moveOut i = case b!i of
-      []    -> []
-      (a:_) -> concatMap (move a i) hallwayIxs
+      []       -> []
+      as@(a:_) -> if all (==a) as && i == home a then [] else concatMap (move a i) hallwayIxs
     move a i j = if null (b!j) && clearBetween i j
       then [Burrow (M.insert j [a] . M.adjust tail i $ b)]
       else []
