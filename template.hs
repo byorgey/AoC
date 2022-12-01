@@ -1,5 +1,5 @@
 #!/usr/bin/env stack
--- stack --resolver lts-18.18 script
+-- stack --resolver lts-19.28 script --package containers --package split
 
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE LambdaCase       #-}
