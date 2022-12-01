@@ -1,5 +1,5 @@
 #!/usr/bin/env stack
--- stack --resolver lts-19.28 script --package containers --package split
+-- stack --resolver lts-19.28 script --package split
 
 import           Control.Arrow   ((>>>))
 import           Data.List       (sortOn)
