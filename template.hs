@@ -95,6 +95,18 @@ find' p = find p >>> fromJust
 infixr 0 >$>
 (>$>) = flip ($)
 
+data Interval = I { lo :: Int, hi :: Int } deriving (Eq, Ord, Show)
+
+(∪), (∩) :: Interval -> Interval -> Interval
+I l1 h1 ∪ I l2 h2 = I (min l1 l2) (max h1 h2)
+I l1 h1 ∩ I l2 h2 = I (max l1 l2) (min h1 h2)
+
+isEmpty :: Interval -> Bool
+isEmpty (I l h) = l > h
+
+(⊆) :: Interval -> Interval -> Bool
+i1 ⊆ i2 = i1 ∪ i2 == i2
+
 -- toTable :: Ix i => (i, i) -> (i -> a) -> Array i a
 -- toTable rng f = array rng (map (id &&& f) (range rng))
 
