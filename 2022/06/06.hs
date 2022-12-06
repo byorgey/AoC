@@ -2,7 +2,8 @@
 -- stack --resolver lts-19.28 script --package containers --package split
 
 import           Control.Arrow ((>>>))
-import           Data.List     (tails)
+import           Data.List     (findIndex, tails)
+import           Data.Maybe    (fromJust)
 import qualified Data.Set      as S
 
 main = interact $
@@ -18,6 +19,6 @@ solveA, solveB :: Input -> Output
 solveA = solve 4
 solveB = solve 14
 
-solve k = tails >>> map (take k) >>> zip [k :: Int ..] >>> filter (ok k . snd) >>> head >>> fst
+solve k = tails >>> map (take k) >>> findIndex (ok k) >>> fromJust >>> (+k)
 
 ok k = S.fromList >>> S.size >>> (==k)
