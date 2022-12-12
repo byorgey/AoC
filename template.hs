@@ -7,11 +7,11 @@
 {-# LANGUAGE TupleSections    #-}
 
 import           Control.Applicative
-import           Control.Arrow
+import           Control.Arrow       ((>>>))
 -- import           Control.Lens
 -- import           Control.Monad.State
 -- import           Control.Monad.Writer
--- import           Data.Array
+-- import           Data.Array.UArray
 import           Data.Bits
 import           Data.Char
 import           Data.Function
@@ -117,3 +117,20 @@ i1 ⊆ i2 = i1 ∪ i2 == i2
 -- memoFix rng f = fix (memo rng . f)
 
 -- readParser p = parse p "" >>> either undefined id
+
+type Coord = (Int,Int)
+
+above, below, left, right :: Coord -> Coord
+above (r,c) = (r-1,c)
+below (r,c) = (r+1,c)
+left (r,c) = (r,c-1)
+right (r,c) = (r,c+1)
+
+-- mkArray :: IArray UArray a => [[a]] -> UArray Coord a
+-- mkArray rows = listArray ((0,0), (length rows - 1, length (head rows) - 1)) (concat rows)
+
+neighbors :: Coord -> [Coord]
+neighbors = applyAll [above, below, left, right]
+
+neighborsIn :: IArray UArray a => UArray Coord a -> Coord -> [Coord]
+neighborsIn a = filter (inRange (bounds a)) . neighbors

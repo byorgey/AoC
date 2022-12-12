@@ -15,14 +15,10 @@ import qualified Data.Set           as S
 main = interact $
   readInput >>> applyAll [solveA,solveB] >>> map show >>> unlines
 
-type Coord = (Int,Int)
 type Input = UArray Coord Char
 
 readInput :: String -> Input
 readInput = lines >>> mkArray
-
-mkArray :: IArray UArray a => [[a]] -> UArray (Int,Int) a
-mkArray rows = listArray ((0,0), (length rows - 1, length (head rows) - 1)) (concat rows)
 
 ------------------------------------------------------------
 
@@ -33,7 +29,7 @@ solveA a = pred . length $ bfs ((=='E') . (a!)) (next fwd a) (S.singleton $ find
 solveB a = pred . length $ bfs ((`elem` "aS") . (a!)) (next (flip fwd) a) (S.singleton $ findCell 'E' a)
 
 next :: (Char -> Char -> Bool) -> UArray Coord Char -> Coord -> Set Coord
-next allowed a cur@(r,c) = S.fromList $ filter (\n -> inRange (bounds a) n && ok n) [(r+1,c), (r-1,c), (r,c+1), (r,c-1)]
+next allowed a cur@(r,c) = S.fromList $ filter ok (neighborsIn a cur)
   where
     ok i = allowed (toHt (a!cur)) (toHt (a!i))
     toHt 'S' = 'a'
@@ -63,3 +59,20 @@ applyAll fs a = map ($ a) fs
 
 find' :: (a -> Bool) -> [a] -> a
 find' p = find p >>> fromJust
+
+type Coord = (Int,Int)
+
+above, below, left, right :: Coord -> Coord
+above (r,c) = (r-1,c)
+below (r,c) = (r+1,c)
+left (r,c) = (r,c-1)
+right (r,c) = (r,c+1)
+
+mkArray :: IArray UArray a => [[a]] -> UArray Coord a
+mkArray rows = listArray ((0,0), (length rows - 1, length (head rows) - 1)) (concat rows)
+
+neighbors :: Coord -> [Coord]
+neighbors = applyAll [above, below, left, right]
+
+neighborsIn :: IArray UArray a => UArray Coord a -> Coord -> [Coord]
+neighborsIn a = filter (inRange (bounds a)) . neighbors
