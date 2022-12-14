@@ -85,6 +85,12 @@ cardinality = map (,1) >>> M.fromListWith (+)
 applyAll :: [a -> b] -> a -> [b]
 applyAll fs a = map ($ a) fs
 
+takeUntil :: (a -> Bool) -> [a] -> [a]
+takeUntil _ [] = []
+takeUntil p (x:xs)
+  | p x = [x]
+  | otherwise = x : takeUntil p xs
+
 onHead :: (a -> a) -> [a] -> [a]
 onHead _ []     = []
 onHead f (a:as) = f a : as
