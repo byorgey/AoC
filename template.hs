@@ -91,6 +91,9 @@ takeUntil p (x:xs)
   | p x = [x]
   | otherwise = x : takeUntil p xs
 
+toPair :: [a] -> (a,a)
+toPair [x,y] = (x,y)
+
 onHead :: (a -> a) -> [a] -> [a]
 onHead _ []     = []
 onHead f (a:as) = f a : as
