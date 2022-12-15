@@ -4,7 +4,8 @@
 import           Control.Arrow    (second, (>>>))
 import           Data.Char        (isDigit)
 import           Data.Interval
-import           Data.IntervalSet
+import           Data.IntervalSet (IntervalSet)
+import qualified Data.IntervalSet as IS
 import           Data.List        (find, foldl')
 import           Data.List.Split  (chunksOf)
 import           Data.Maybe       (fromJust, isJust, listToMaybe)
@@ -35,10 +36,10 @@ intervalAtY y (sensor@(sx,sy), beacon@(bx,by)) = Finite (sx - offset) <=..< Fini
     offset = d - h
 
 intervalSetAtY :: Int -> [(Coord, Coord)] -> IntervalSet Int
-intervalSetAtY y = map (intervalAtY y >>> Data.IntervalSet.singleton) >>> unions
+intervalSetAtY y = map (intervalAtY y >>> IS.singleton) >>> IS.unions
 
 getGap :: Int -> IntervalSet Int -> Maybe Int
-getGap search = toList >>> map (upperBound >>> getF) >>> filter (\x -> 0 <= x && x <= search) >>> listToMaybe
+getGap search = IS.toList >>> map (upperBound >>> getF) >>> filter (\x -> 0 <= x && x <= search) >>> listToMaybe
   where
     getF (Finite n) = n
 
@@ -49,9 +50,9 @@ hasGap search = getGap search >>> isJust
 type Output = Int
 
 solveA, solveB :: Input -> Output
-solveA i = i >$> intervalSetAtY y >>> flip (foldl' Data.IntervalSet.difference) bs >>> Data.IntervalSet.toList >>> map width >>> sum
+solveA i = i >$> intervalSetAtY y >>> flip (foldl' IS.difference) bs >>> IS.toList >>> map width >>> sum
   where
-    bs = map (snd >>> fst >>> (\x -> Finite x <=..< Finite (x+1)) >>> Data.IntervalSet.singleton) $ filter (snd >>> snd >>> (==y)) i
+    bs = map (snd >>> fst >>> (\x -> Finite x <=..< Finite (x+1)) >>> IS.singleton) $ filter (snd >>> snd >>> (==y)) i
     y = 2000000
 
 solveB i = x*4000000 + y
