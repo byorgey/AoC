@@ -1,0 +1,135 @@
+graph G {
+AA [label=AA,shape=box,style=filled,fillcolor=blue]
+AK [label=AK,shape=box]
+AL [label=AL,shape=box]
+AM [label=AM,shape=box]
+AS [label=AS,shape=box]
+BL [label=BL,shape=box]
+CD [label=CD,shape=box]
+CZ [label=CZ,shape=box]
+DG [label=DG,shape=box,style=filled,fillcolor=red]
+DJ [label=DJ,shape=box]
+DQ [label=DQ,shape=box]
+EJ [label=EJ,shape=box]
+EK [label=EK,shape=box]
+ES [label=ES,shape=box]
+FM [label=FM,shape=box,style=filled,fillcolor=red]
+GB [label=GB,shape=box,style=filled,fillcolor=red]
+GF [label=GF,shape=box]
+GI [label=GI,shape=box]
+GZ [label=GZ,shape=box]
+HS [label=HS,shape=box]
+HV [label=HV,shape=box,style=filled,fillcolor=red]
+HY [label=HY,shape=box]
+IC [label=IC,shape=box,style=filled,fillcolor=red]
+IS [label=IS,shape=box,style=filled,fillcolor=red]
+IY [label=IY,shape=box]
+JK [label=JK,shape=box]
+JP [label=JP,shape=box]
+JS [label=JS,shape=box]
+LS [label=LS,shape=box]
+MC [label=MC,shape=box]
+MS [label=MS,shape=box]
+MX [label=MX,shape=box,style=filled,fillcolor=red]
+NG [label=NG,shape=box,style=filled,fillcolor=red]
+OB [label=OB,shape=box]
+OE [label=OE,shape=box]
+OM [label=OM,shape=box,style=filled,fillcolor=red]
+OT [label=OT,shape=box,style=filled,fillcolor=red]
+PF [label=PF,shape=box]
+PQ [label=PQ,shape=box]
+PW [label=PW,shape=box]
+QP [label=QP,shape=box]
+QQ [label=QQ,shape=box,style=filled,fillcolor=red]
+QX [label=QX,shape=box]
+RL [label=RL,shape=box]
+SN [label=SN,shape=box]
+SS [label=SS,shape=box]
+ST [label=ST,shape=box]
+TO [label=TO,shape=box]
+UC [label=UC,shape=box]
+UJ [label=UJ,shape=box]
+UR [label=UR,shape=box]
+VX [label=VX,shape=box,style=filled,fillcolor=red]
+WH [label=WH,shape=box]
+WI [label=WI,shape=box,style=filled,fillcolor=red]
+XX [label=XX,shape=box]
+YA [label=YA,shape=box]
+YB [label=YB,shape=box]
+YW [label=YW,shape=box,style=filled,fillcolor=red]
+ZI [label=ZI,shape=box]
+ZL [label=ZL,shape=box,style=filled,fillcolor=red]
+AA -- UJ;
+AA -- ES;
+AA -- JP;
+AA -- HY;
+AA -- ST;
+AK -- WI;
+AK -- AL;
+AL -- VX;
+AM -- OM;
+AM -- YW;
+AS -- IS;
+AS -- MS;
+BL -- YW;
+BL -- OT;
+CD -- SS;
+CD -- ZL;
+CZ -- IC;
+CZ -- ZL;
+DG -- QP;
+DG -- SN;
+DJ -- OT;
+DJ -- ST;
+DQ -- YB;
+DQ -- HV;
+EJ -- GB;
+EJ -- ES;
+EK -- OM;
+EK -- PW;
+FM -- XX;
+GB -- LS;
+GB -- RL;
+GB -- JK;
+GB -- YA;
+GF -- GI;
+GF -- NG;
+GI -- OM;
+GZ -- HY;
+GZ -- YW;
+HS -- NG;
+HS -- OB;
+HV -- YA;
+HV -- TO;
+HV -- JS;
+HV -- PF;
+IC -- OE;
+IC -- UJ;
+IC -- TO;
+IC -- RL;
+IS -- OB;
+IS -- QP;
+IY -- QQ;
+IY -- SN;
+JK -- YW;
+JP -- PF;
+JS -- OT;
+LS -- OT;
+MC -- XX;
+MC -- QQ;
+MS -- QQ;
+MX -- WH;
+MX -- YB;
+NG -- UC;
+OE -- OT;
+OM -- UR;
+PQ -- ZL;
+PQ -- YW;
+PW -- ZL;
+QQ -- WH;
+QX -- UC;
+QX -- ZL;
+SS -- WI;
+UR -- ZI;
+VX -- ZI;
+}

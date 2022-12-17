@@ -1,0 +1,22 @@
+graph G {
+AA [label=AA,shape=box]
+BB [label=BB,shape=box]
+CC [label=CC,shape=box]
+DD [label=DD,shape=box]
+EE [label=EE,shape=box]
+FF [label=FF,shape=box]
+GG [label=GG,shape=box]
+HH [label=HH,shape=box]
+II [label=II,shape=box]
+JJ [label=JJ,shape=box]
+AA -- DD;
+AA -- II;
+AA -- BB;
+BB -- CC;
+CC -- DD;
+DD -- EE;
+EE -- FF;
+FF -- GG;
+GG -- HH;
+II -- JJ;
+}
