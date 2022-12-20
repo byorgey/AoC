@@ -11,7 +11,7 @@ import           Control.Arrow       ((>>>))
 -- import           Control.Lens
 -- import           Control.Monad.State
 -- import           Control.Monad.Writer
--- import           Data.Array.UArray
+-- import           Data.Array.Unboxed
 import           Data.Bits
 import           Data.Char
 import           Data.Function
