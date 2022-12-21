@@ -1,7 +1,8 @@
 #!/usr/bin/env stack
 -- stack --resolver lts-19.28 script --package containers --package split
 
-{-# LANGUAGE ViewPatterns #-}
+{-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE ViewPatterns  #-}
 
 import           Control.Applicative (Applicative (liftA2))
 import           Control.Arrow       ((>>>))
@@ -16,26 +17,30 @@ applyAll fs a = map ($ a) fs
 
 ------------------------------------------------------------
 
-data Job = Lit Int | Op String Char String
-data Monkey = Monkey { name :: String, job :: Job }
+data Job a = Lit Int | Op a Char a deriving (Eq, Show, Functor)
+data Monkey = Monkey String (Job String) deriving (Eq, Show)
 type Input = [Monkey]
 
 readInput :: String -> Input
 readInput = lines >>> map (words >>> readMonkey)
 
-readMonkey [init -> nm, k]          = Monkey nm (Lit (read k))
-readMonkey [init -> nm, x, [op], y] = Monkey nm (Op x op y)
+readMonkey [init -> name, k]          = Monkey name (Lit (read k))
+readMonkey [init -> name, x, [op], y] = Monkey name (Op x op y)
+
+interpMonkeyTree :: (String -> Job a -> a) -> [Monkey] -> a
+interpMonkeyTree interp monkeys = m!"root"
+  where
+    m = M.fromList (map (\(Monkey name job) -> (name, interp name (fmap (m!) job))) monkeys)
 
 ------------------------------------------------------------
 
 type Output = Int
 
 solveA :: Input -> Output
-solveA monkeys = m!"root"
+solveA = interpMonkeyTree interp
   where
-    m = M.fromList (map (\(Monkey nm jb) -> (nm, interp jb)) monkeys)
-    interp (Lit n)     = n
-    interp (Op x op y) = interpOp op (m!x) (m!y)
+    interp _ (Lit n)     = n
+    interp _ (Op x op y) = interpOp op x y
 
 interpOp '+' = (+)
 interpOp '-' = (-)
@@ -51,16 +56,12 @@ treeVal (Leaf v)         = v
 treeVal (Branch v _ _ _) = v
 
 mkTree :: [Monkey] -> MTree
-mkTree monkeys = m!"root"
+mkTree = interpMonkeyTree mkNode
   where
-    m = M.fromList (map (\(Monkey nm jb) -> (nm, monkeyTree nm jb)) monkeys)
-    monkeyTree "root" (Op x _ y) = Branch Nothing '=' (m!x) (m!y)
-    monkeyTree "humn" _ = Leaf Nothing
-    monkeyTree nm (Lit n) = Leaf (Just n)
-    monkeyTree nm (Op x op y) = Branch (liftA2 (interpOp op) (treeVal l) (treeVal r)) op l r
-      where
-        l = m!x
-        r = m!y
+    mkNode "root" (Op x _ y) = Branch Nothing '=' x y
+    mkNode "humn" _ = Leaf Nothing
+    mkNode nm (Lit n) = Leaf (Just n)
+    mkNode nm (Op l op r) = Branch (liftA2 (interpOp op) (treeVal l) (treeVal r)) op l r
 
 solveTree :: MTree -> Int
 solveTree (Branch _ _ l r) = case (treeVal l, treeVal r) of
