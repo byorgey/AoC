@@ -26,6 +26,8 @@ readInput = lines >>> map (words >>> readMonkey)
 readMonkey [init -> nm, k]          = Monkey nm (Lit (read k))
 readMonkey [init -> nm, x, [op], y] = Monkey nm (Op x op y)
 
+------------------------------------------------------------
+
 type Output = Int
 
 solveA :: Input -> Output
