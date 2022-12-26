@@ -67,6 +67,9 @@ dfs winning fnext start = dfs' S.empty [start] start
         where
           next = fnext cur
 
+uncurryL :: (a -> a -> b) -> [a] -> b
+uncurryL f [x,y] = f x y
+
 pairs :: [a] -> [(a,a)]
 pairs []     = []
 pairs (x:xs) = map (x,) xs ++ pairs xs
