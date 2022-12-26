@@ -11,13 +11,13 @@ import           Control.Arrow       ((>>>))
 -- import           Control.Lens
 -- import           Control.Monad.State
 -- import           Control.Monad.Writer
--- import           Data.Array.Unboxed
+import           Data.Array.Unboxed
 import           Data.Bits
 import           Data.Char
 import           Data.Function
 import           Data.List
 import           Data.List.Split
-import           Data.Map            (Map, (!))
+import           Data.Map            (Map)
 import qualified Data.Map.Strict     as M
 import           Data.Maybe
 import           Data.Ord
