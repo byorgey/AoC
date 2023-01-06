@@ -7,7 +7,7 @@
 {-# LANGUAGE TupleSections    #-}
 
 import           Control.Applicative
-import           Control.Arrow       ((>>>))
+import           Control.Arrow       ((>>>), (&&&))
 -- import           Control.Lens
 -- import           Control.Monad.State
 -- import           Control.Monad.Writer
@@ -31,18 +31,45 @@ import           Text.Printf
 import           Debug.Trace
 
 main = interact $
-  readInput >>> applyAll [solveA,solveB] >>> map show >>> unlines
+  readInput >>> applyAll [solveA,solveB] >>> unlines
 
-type Input = ()
+data Pixel = B | W | T deriving (Eq, Show, Enum)
+
+instance Semigroup Pixel where
+  T <> p = p
+  p <> _ = p
+
+instance Monoid Pixel where
+  mempty = T
+
+readPixel = digitToInt >>> toEnum
+
+drawPixel B = ' '
+drawPixel W = 'X'
+drawPixel T = ' '
+
+newtype Layer = Layer { getLayer :: [[Pixel]] }
+
+instance Semigroup Layer where
+  Layer l1 <> Layer l2 = Layer (zipWith (zipWith (<>)) l1 l2)
+
+instance Monoid Layer where
+  mempty = Layer (replicate 6 (replicate 25 T))
+
+drawLayer :: Layer -> String
+drawLayer = getLayer >>> map (map drawPixel) >>> unlines
+
+type Input = [Layer]
+
 
 readInput :: String -> Input
-readInput = lines >>> _
+readInput = lines >>> head >>> map readPixel >>> chunksOf (25*6) >>> map (chunksOf 25 >>> Layer)
 
-type Output = Int
+type Output = String
 
 solveA, solveB :: Input -> Output
-solveA = const 0
-solveB = const 0
+solveA = minimumBy (comparing (getLayer >>> concat >>> count (==B))) >>> getLayer >>> concat >>> (count (==W) &&& count (==T)) >>> uncurry (*) >>> show
+solveB = mconcat >>> drawLayer
 
 ------------------------------------------------------------
 -- Utilities
