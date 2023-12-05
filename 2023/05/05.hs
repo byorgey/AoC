@@ -11,11 +11,11 @@ import Data.List.Split (chunksOf, splitOn)
 import Data.Maybe (fromJust, fromMaybe)
 
 main =
-    interact
-        $ readInput
-        >>> applyAll [solveA, solveB]
-        >>> map show
-        >>> unlines
+  interact $
+    readInput
+      >>> applyAll [solveA, solveB]
+      >>> map show
+      >>> unlines
 
 ------------------------------------------------------------
 -- Input
@@ -33,9 +33,9 @@ readAlmanac ([ss] : ms) = Almanac (ss >$> words >>> drop 1 >>> map read) (map re
 
 readMap :: [String] -> ConvMap
 readMap (title : rs) = CM s d (map readRangeMap rs)
-  where
-    [s, _, d] = splitOn "-" (head (words title))
-    readRangeMap = words >>> map read >>> (\[a, b, c] -> RM a b c)
+ where
+  [s, _, d] = splitOn "-" (head (words title))
+  readRangeMap = words >>> map read >>> (\[a, b, c] -> RM a b c)
 
 seedRanges :: [Int] -> [Interval]
 seedRanges = chunksOf 2 >>> map (\[x, l] -> I x (x + l - 1))
@@ -48,8 +48,8 @@ lookupCM (CM _ _ rs) i = fromMaybe i (F.asum (map (`lookupRM` i) rs))
 
 lookupRM :: RangeMap -> Int -> Maybe Int
 lookupRM (RM d s l) i
-    | i >= s && i < s + l = Just $ d + (i - s)
-    | otherwise = Nothing
+  | i >= s && i < s + l = Just $ d + (i - s)
+  | otherwise = Nothing
 
 follow :: [ConvMap] -> Int -> Int
 follow = map lookupCM >>> foldr (>>>) id
@@ -67,8 +67,8 @@ type Output = Int
 solveA, solveB :: Input -> Output
 solveA Almanac {..} = minimum $ map (follow maps) seeds
 solveB Almanac {..} = find' (follow (map invCM $ reverse maps) >>> \s -> any (s ∈) ss) [1 ..]
-  where
-    ss = seedRanges seeds
+ where
+  ss = seedRanges seeds
 
 ------------------------------------------------------------
 -- Utilities
