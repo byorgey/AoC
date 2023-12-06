@@ -39,22 +39,21 @@ mod1 x = x - fromIntegral (floor x)
 -- Fancy solution using quadratic formula, just for fun.  Let t =
 -- time, d = distance, sd = sqrt(t^2 - 4d).  Then the solution =
 -- number of integers on the open interval (l = (t - sd)/2, r = (t +
--- sd)/2).  The length of the interval is sd, but there might be
--- either (sd - 1), floor(sd), or ceiling(sd) integers in the
--- interval.  We can find out which by (1) checking whether l and r
--- are integers, (2) checking whether {sd} > ceil(l) - l.
+-- sd)/2), which is ((ceiling(r) - 1) - (floor(l) + 1) + 1).  However,
+-- that formula might break due to floating-point error, so we first
+-- check specially for the case when l and r are integers.
 
 waysToWin :: Race -> Int
 waysToWin [t, d]
   | isd ^ 2 == disc && t `mod` 2 == isd `mod` 2 = isd - 1
-  | mod1 sd > 1 - mod1 l = ceiling sd
-  | otherwise = floor sd
+  | otherwise = floor r - ceiling l + 1
  where
   disc = t ^ 2 - 4 * d
   isd = isqrt disc
-  sd, l :: Double
+  sd, l, r :: Double
   sd = sqrt (fromIntegral disc)
   l = (fromIntegral t - sd) / 2
+  r = (fromIntegral t + sd) / 2
 
 fixKerning :: [Race] -> [Race]
 fixKerning = transpose >>> map (map show >>> concat >>> read) >>> (: [])
