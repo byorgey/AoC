@@ -5,11 +5,11 @@ import Control.Arrow ((>>>))
 import Data.List (transpose)
 
 main =
-    interact
-        $ readInput
-        >>> applyAll [solveA, solveB]
-        >>> map show
-        >>> unlines
+  interact $
+    readInput
+      >>> applyAll [solveA, solveB]
+      >>> map show
+      >>> unlines
 
 applyAll :: [a -> b] -> a -> [b]
 applyAll fs a = map ($ a) fs
@@ -28,10 +28,10 @@ readInput = lines >>> map (words >>> drop 1 >>> map read) >>> transpose
 
 isqrt 1 = 1
 isqrt n = go (n `div` 2)
-  where
-    go d
-        | d * d <= n && (d + 1) * (d + 1) > n = d
-        | otherwise = go ((d + n `div` d) `div` 2)
+ where
+  go d
+    | d * d <= n && (d + 1) * (d + 1) > n = d
+    | otherwise = go ((d + n `div` d) `div` 2)
 
 mod1 :: Double -> Double
 mod1 x = x - fromIntegral (floor x)
@@ -46,15 +46,15 @@ mod1 x = x - fromIntegral (floor x)
 
 waysToWin :: Race -> Int
 waysToWin [t, d]
-    | isd ^ 2 == disc && t `mod` 2 == isd `mod` 2 = isd - 1
-    | mod1 sd > 1 - mod1 l = ceiling sd
-    | otherwise = floor sd
-  where
-    disc = t ^ 2 - 4 * d
-    isd = isqrt disc
-    sd, l :: Double
-    sd = sqrt (fromIntegral disc)
-    l = (fromIntegral t - sd) / 2
+  | isd ^ 2 == disc && t `mod` 2 == isd `mod` 2 = isd - 1
+  | mod1 sd > 1 - mod1 l = ceiling sd
+  | otherwise = floor sd
+ where
+  disc = t ^ 2 - 4 * d
+  isd = isqrt disc
+  sd, l :: Double
+  sd = sqrt (fromIntegral disc)
+  l = (fromIntegral t - sd) / 2
 
 fixKerning :: [Race] -> [Race]
 fixKerning = transpose >>> map (map show >>> concat >>> read) >>> (: [])
