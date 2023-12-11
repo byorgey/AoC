@@ -1,8 +1,7 @@
--- Alternative solution to #10 part 2, using Pick's Theorem
-
 #!/usr/bin/env stack
 -- stack --resolver lts-19.28 script --package containers --package array
 
+-- Alternative solution to #10 part 2, using Pick's Theorem
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE LambdaCase #-}
@@ -84,7 +83,7 @@ insideCount :: [Coord] -> Int
 insideCount vs = (area2 vs - length vs) `div` 2 + 1
 
 solveA, solveB :: Input -> Output
-solveA = findLoop >>> length >>> pred
+solveA = findLoop >>> length >>> (`div` 2)
 solveB = findLoop >>> insideCount
 
 ------------------------------------------------------------
