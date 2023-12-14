@@ -153,3 +153,29 @@ neighbors = applyAll [above, below, left, right]
 
 neighborsIn :: IArray UArray a => UArray Coord a -> Coord -> [Coord]
 neighborsIn a = filter (inRange (bounds a)) . neighbors
+
+zipWithL :: (a -> a -> a) -> [a] -> [a] -> [a]
+zipWithL _ [] ys = ys
+zipWithL _ xs [] = xs
+zipWithL f (x : xs) (y : ys) = f x y : zipWithL f xs ys
+
+zipSum :: [[Int]] -> [Int]
+zipSum [] = []
+zipSum ([] : xss) = 0 : zipSum xss
+zipSum ((x : xs) : xss) = x : zipWithL (+) xs (zipSum xss)
+
+-- Floyd's cycle-finding algorithm.  floyd f x0 returns the smallest
+-- (μ, λ) such that (s !! (μ + i) == s !! (μ + i + λ)) for all i >= 0
+-- where s = iterate f x0.
+floyd :: Eq a => (a -> a) -> a -> (Int, Int)
+floyd f x0 = (μ, λ)
+ where
+  tortoiseHare = f *** (f . f)
+  step = f *** f
+
+  findMatch :: Eq a => ((a, a) -> (a, a)) -> (a, a) -> (Int, a)
+  findMatch g = iterate g >>> zip [0 ..] >>> find' (snd >>> uncurry (==)) >>> second fst
+
+  (_, xν) = findMatch tortoiseHare (tortoiseHare (x0, x0))
+  (μ, xμ) = findMatch step (x0, xν)
+  λ = succ . fromJust $ elemIndex xμ (iterate f (f xμ))
