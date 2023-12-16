@@ -60,8 +60,6 @@ focusingPower = IM.assocs >>> concatMap focusBox >>> sum
   focusBox :: (Int, [(Label, Int)]) -> [Int]
   focusBox (i, ls) = zipWith (\p (_, n) -> p * n * (i + 1)) [1 ..] ls
 
-type Output = Int
-
 ------------------------------------------------------------
 -- Main
 
@@ -74,6 +72,8 @@ main =
 
 applyAll :: [a -> b] -> a -> [b]
 applyAll fs a = map ($ a) fs
+
+type Output = Int
 
 solveA, solveB :: Input -> Output
 solveA = map hash >>> sum
