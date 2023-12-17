@@ -28,7 +28,10 @@ solve minStraight maxStraight start grid =
 
 solveA, solveB :: Input -> Output
 solveA = solve 1 3 initNode
-solveB grid = min (solve 4 10 initNode grid) (solve 4 10 (Node (0, 0) (1, 0) 0) grid)
+solveB = solve 4 10 initNode
+
+-- If we are allowed to take the first step to the south:
+-- min (solve 4 10 initNode grid) (solve 4 10 (Node (0, 0) (1, 0) 0) grid)
 
 ------------------------------------------------------------
 
