@@ -1,0 +1,169 @@
+digraph G {
+kl [shape=invtrapezium]
+vd [shape=diamond]
+dx [shape=diamond]
+jj [shape=diamond]
+ld [shape=diamond]
+bn [shape=diamond]
+mv [shape=diamond]
+mx [shape=diamond]
+qm [shape=diamond]
+zd [shape=diamond]
+tq [shape=diamond]
+vm [shape=invtrapezium]
+qr [shape=diamond]
+bv [shape=diamond]
+rf [shape=diamond]
+broadcaster [shape=point]
+rk [shape=diamond]
+tj [shape=invtrapezium]
+dg [shape=diamond]
+xt [shape=diamond]
+fq [shape=diamond]
+gz [shape=diamond]
+rl [shape=diamond]
+rc [shape=diamond]
+km [shape=diamond]
+gv [shape=diamond]
+lr [shape=diamond]
+lg [shape=diamond]
+jh [shape=diamond]
+rs [shape=diamond]
+bt [shape=diamond]
+mf [shape=diamond]
+xf [shape=diamond]
+tp [shape=diamond]
+ch [shape=diamond]
+xp [shape=diamond]
+xh [shape=diamond]
+fz [shape=diamond]
+zp [shape=diamond]
+kv [shape=invtrapezium]
+ll [shape=invtrapezium]
+zz [shape=diamond]
+lp [shape=diamond]
+vb [shape=invtrapezium]
+th [shape=invtrapezium]
+sq [shape=diamond]
+st [shape=diamond]
+fx [shape=diamond]
+fj [shape=diamond]
+lq [shape=diamond]
+fn [shape=diamond]
+ct [shape=diamond]
+ff [shape=invtrapezium]
+js [shape=diamond]
+mb [shape=diamond]
+hb [shape=invtrapezium]
+kc [shape=diamond]
+sv [shape=diamond]
+kl -> ll;
+vd -> ff;
+vd -> mb;
+dx -> hb;
+dx -> fx;
+jj -> xt;
+jj -> th;
+ld -> fq;
+ld -> ff;
+bn -> ff;
+bn -> lg;
+mv -> hb;
+mv -> mx;
+mx -> xp;
+qm -> gz;
+qm -> tj;
+zd -> zp;
+tq -> mf;
+vm -> ll;
+qr -> jj;
+bv -> th;
+bv -> lr;
+rf -> lq;
+rf -> tj;
+broadcaster -> lp;
+broadcaster -> fn;
+broadcaster -> tp;
+broadcaster -> zz;
+rk -> rc;
+rk -> th;
+tj -> xh;
+tj -> gv;
+tj -> gz;
+tj -> bt;
+tj -> ct;
+tj -> vb;
+tj -> lp;
+dg -> rf;
+dg -> tj;
+xt -> rk;
+xt -> th;
+fq -> ff;
+gz -> dg;
+rl -> hb;
+rc -> st;
+rc -> th;
+km -> fz;
+km -> hb;
+gv -> ct;
+lr -> tq;
+lg -> vd;
+jh -> th;
+rs -> sq;
+rs -> ff;
+bt -> kc;
+mf -> th;
+mf -> qr;
+xf -> km;
+tp -> hb;
+tp -> sv;
+ch -> hb;
+ch -> mv;
+xp -> hb;
+xp -> xf;
+xh -> js;
+fz -> hb;
+fz -> dx;
+zp -> bn;
+kv -> ll;
+ll -> rx;
+zz -> fj;
+zz -> ff;
+lp -> gv;
+lp -> tj;
+vb -> ll;
+th -> tq;
+th -> lr;
+th -> vm;
+th -> fn;
+th -> qr;
+sq -> zd;
+sq -> ff;
+st -> th;
+st -> jh;
+fx -> rl;
+fx -> hb;
+fj -> rs;
+lq -> tj;
+fn -> th;
+fn -> bv;
+ct -> xh;
+ff -> kl;
+ff -> zd;
+ff -> lg;
+ff -> zz;
+ff -> fj;
+ff -> zp;
+js -> tj;
+js -> bt;
+mb -> ld;
+mb -> ff;
+hb -> sv;
+hb -> xf;
+hb -> kv;
+hb -> tp;
+hb -> mx;
+kc -> qm;
+kc -> tj;
+sv -> ch;
+}
