@@ -34,5 +34,5 @@ theorem diff_comm : {a b : Nat} → diff a b = diff b a := fun {a b} => calc
   _ = diff b a                  := by simp [diff]
 
 theorem diff_comm2 : {a b : Nat} → diff a b = diff b a :=
-  fun {a b} => by simp [Nat.max_comm, Nat.min_comm, diff]
+  by simp [Nat.max_comm, Nat.min_comm, diff]
 
