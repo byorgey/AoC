@@ -16,7 +16,9 @@ def solveA : Input → Output
 def solveB : Input → Output
   | (xs, ys) => (xs.map (fun x => x * ys.count x)).sum
 
-def parse (input : String) : Input := ((input.splitOn "\n").map splitPair).unzip
+-- which style is better?
+def parse : String → Input := List.unzip ∘ List.map splitPair ∘ fun s => s.splitOn "\n"
+def parse2 (input : String) : Input := ((input.splitOn "\n").map splitPair).unzip
 
 def main : IO Unit := do
   let input <- parse <$> IO.FS.readFile "Day01/input"
