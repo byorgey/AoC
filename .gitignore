@@ -16,6 +16,7 @@ TAGS
 /cabal.config
 /.cabal-sandbox/
 \#*
+.lake
 
 *.dyn_hi
 *.dyn_o
