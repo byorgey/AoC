@@ -2,7 +2,7 @@ import AoC2024
 import Parser
 
 ------------------------------------------------------------
--- Parsing
+-- Data representation
 
 inductive Instruction where
   | mul : Nat → Nat → Instruction
@@ -11,13 +11,16 @@ inductive Instruction where
 
 abbrev Input := List Instruction
 
+------------------------------------------------------------
+-- Parsing
+
 namespace Day03
 
 open Parser Char
 
 protected abbrev Parser := Parser Unit Substring Char
 
-protected def parseMul : Day03.Parser (Nat × Nat) :=
+def parseMul : Day03.Parser (Nat × Nat) :=
   string "mul" *>
   char '(' *>
   ASCII.parseNat >>= λ x =>
@@ -26,14 +29,12 @@ protected def parseMul : Day03.Parser (Nat × Nat) :=
   char ')' *>
   pure (x, y)
 
-#check Function.const
-
-protected def parseInstr : Day03.Parser Instruction :=
+def parseInstr : Day03.Parser Instruction :=
   ((λ _ => Instruction.don't) <$> string "don't") <|>
   ((λ _ => Instruction.«do») <$> string "do") <|>
   (Function.uncurry Instruction.mul <$> Day03.parseMul)
 
-protected def parseInstrs : Day03.Parser (Array Instruction) :=
+def parseInstrs : Day03.Parser (Array Instruction) :=
   takeMany (dropUntil Day03.parseInstr anyToken)
 
 end Day03
@@ -45,10 +46,11 @@ def parse (s : String) : Input := match Parser.run Day03.parseInstrs s with
 ------------------------------------------------------------
 -- Part A
 
-def List.filterMuls : List Instruction → List (Nat × Nat)
-  | [] => []
-  | .mul a b :: is => (a,b) :: filterMuls is
-  | _ :: is => filterMuls is
+def List.filterMuls : List Instruction → List (Nat × Nat) := List.filterMap extractMul
+  where
+    extractMul
+      | .mul a b => some (a,b)
+      | _ => none
 
 def solveA (i : Input) := (i.filterMuls.map (Function.uncurry (· * ·))).sum
 
@@ -57,12 +59,12 @@ def solveA (i : Input) := (i.filterMuls.map (Function.uncurry (· * ·))).sum
 
 def interpMuls : Bool → List Instruction → List Nat
   | _, [] => []
-  | _, .«do» :: is => interpMuls True is
-  | _, .don't :: is => interpMuls False is
+  | _, .«do» :: is => interpMuls true is
+  | _, .don't :: is => interpMuls false is
   | true, .mul x y :: is => x*y :: interpMuls true is
   | false, .mul _ _ :: is => interpMuls false is
 
-def solveB (is : Input) := (interpMuls True is).sum
+def solveB (is : Input) := (interpMuls true is).sum
 
 ------------------------------------------------------------
 -- main
