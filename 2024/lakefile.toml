@@ -7,6 +7,11 @@ name = "batteries"
 scope = "leanprover-community"
 rev = "main"
 
+[[require]]
+name = "Parser"
+git = "https://github.com/fgdorais/lean4-parser"
+rev = "main"
+
 [[lean_lib]]
 name = "AoC2024"
 
@@ -17,3 +22,7 @@ root = "Day01.Main"
 [[lean_exe]]
 name = "aoc2024_02"
 root = "Day02.Main"
+
+[[lean_exe]]
+name = "aoc2024_03"
+root = "Day03.Main"
