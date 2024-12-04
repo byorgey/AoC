@@ -43,9 +43,9 @@ def wordLocs (dt : DirType) (n : Nat) (m : Nat) : List (List (Int × Int)) := do
   guard (inBounds n e)
   pure $ (List.range m).map (λ k => (r,c) + k * d)
 
-#eval (wordLocs .all 3 4).length
-#eval (wordLocs .all 4 4).length
-#eval (wordLocs .all 3 3).length
+example : (wordLocs .all 3 4).length = 0 := by rfl
+example : (wordLocs .all 4 4).length = 20 := by rfl
+example : (wordLocs .all 3 3).length = 16 := by rfl
 
 def index : Input → Int × Int → Char
   | grid, (r,c) => (grid[r.toNat]!)[c.toNat]!
