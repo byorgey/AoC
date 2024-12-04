@@ -12,6 +12,10 @@ name = "Parser"
 git = "https://github.com/fgdorais/lean4-parser"
 rev = "main"
 
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+
 [[lean_lib]]
 name = "AoC2024"
 
@@ -26,3 +30,7 @@ root = "Day02.Main"
 [[lean_exe]]
 name = "aoc2024_03"
 root = "Day03.Main"
+
+[[lean_exe]]
+name = "aoc2024_04"
+root = "Day04.Main"
