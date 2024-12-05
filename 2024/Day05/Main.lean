@@ -1,9 +1,5 @@
 import AoC2024
 import Batteries.Data.HashMap
-import Batteries.Data.RBMap
-
--- When I import this, my program stops printing anything!?
--- import Mathlib.Control.Bifunctor
 
 open Batteries
 
@@ -25,7 +21,7 @@ deriving Inhabited
 def parseRules (rs : List String) : Rules :=
   let ps₁ := rs.map (λ r => ((r.splitOn "|").map String.toNat!).toPair)
   let ps₂ := ps₁.map (λ (x,y) => (x,[y]))
-  HashMap.ofListWith ps₂ List.append
+  HashMap.ofListWith ps₂ (· ++ ·)
 
 def parseUpdates (us : List String) : List Update :=
   us.map (λ r => (r.splitOn ",").map String.toNat!)
@@ -53,7 +49,9 @@ def topSort (r : Rules) (u : Update) : Update :=
   u.mergeSort (λ x y => (r.find! x).elem y)
 
 def solveB (i : Input) : Nat :=
-  ((i.updates.filter (not ∘ okUpdate i.rules)).map (middle ∘ topSort i.rules)).sum
+  i.updates.filter (not ∘ okUpdate i.rules)
+    |> List.map (middle ∘ topSort i.rules)
+    |> List.sum
 
 ------------------------------------------------------------
 -- main
