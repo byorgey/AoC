@@ -23,7 +23,7 @@ deriving Inhabited
 -- Parsing
 
 def parseRules (rs : List String) : Rules :=
-  let ps₁ := rs.map (λ r => ((r.splitOn "|").map String.toNat!).list2Pair)
+  let ps₁ := rs.map (λ r => ((r.splitOn "|").map String.toNat!).toPair)
   let ps₂ := ps₁.map (λ (x,y) => (x,[y]))
   HashMap.ofListWith ps₂ List.append
 

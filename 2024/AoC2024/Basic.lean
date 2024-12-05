@@ -17,6 +17,6 @@ def List.pairs : List α → List (α × α)
   | [] => []
   | a :: as => as.map (a, ·) ++ as.pairs
 
-def List.list2Pair [Inhabited α] : List α → (α × α)
+def List.toPair [Inhabited α] : List α → (α × α)
   | [x,y] => (x, y)
   | _ => panic! "Not a pair!"
