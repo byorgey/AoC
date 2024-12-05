@@ -24,6 +24,6 @@ def solveB (is : Input) : Nat := sorry
 -- main
 
 def main : IO Unit := do
-  let input <- parse <$> IO.FS.readFile "Day03/input"
+  let input <- parse <$> IO.FS.readFile "DayXX/input"
   IO.println s!"{solveA input}"
   IO.println s!"{solveB input}"
