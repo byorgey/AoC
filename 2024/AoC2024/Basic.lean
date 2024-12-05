@@ -20,3 +20,9 @@ def List.pairs : List α → List (α × α)
 def List.toPair [Inhabited α] : List α → (α × α)
   | [x,y] => (x, y)
   | _ => panic! "Not a pair!"
+
+def first : (α → β) → (α × γ) → (β × γ)
+  | f, (a, c) => (f a, c)
+
+def second : (α → β) → (γ × α) → (γ × β)
+  | f, (c, a) => (c, f a)
