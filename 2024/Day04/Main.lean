@@ -18,39 +18,36 @@ inductive DirType where
   | all : DirType
   | diag : DirType
 
-def dirs (dt : DirType) : List (Int × Int) := do
+def dirs (dt : DirType) : List (V2 Int) := do
   let dr ← [-1, 0, 1]
   let dc ← [-1, 0, 1]
   match dt with
     | .all => guard (dr ≠ 0 ∨ dc ≠ 0)
     | .diag => guard (dr ≠ 0 ∧ dc ≠ 0)
-  pure (dr, dc)
+  pure $ V2.mk dr dc
 
-instance : HAdd (Nat × Nat) (Int × Int) (Int × Int) where
-  hAdd | (a, b), (c, d) => (a+c,b+d)
+def inBounds : Nat → V2 Int → Bool
+  | n, v => 0 ≤ v.x ∧ v.x < n ∧ 0 ≤ v.y ∧ v.y < n
 
-instance : HMul Nat (Int × Int) (Int × Int) where
-  hMul | k, (a,b) => (k * a, k * b)
+#print HMul
 
-def inBounds : Nat → Int × Int → Bool
-  | n, (a,b) => 0 ≤ a ∧ a < n ∧ 0 ≤ b ∧ b < n
-
-def wordLocs (dt : DirType) (n : Nat) (m : Nat) : List (List (Int × Int)) := do
+def wordLocs (dt : DirType) (n : Nat) (m : Nat) : List (List (V2 Int)) := do
   let d ← dirs dt
   let r ← List.range n
   let c ← List.range n
-  let e := (r,c) + (m-1) * d
+  let l : V2 Int := ⟨r, c⟩
+  let e := l + (m-1 : Int) * d
   guard (inBounds n e)
-  pure $ (List.range m).map (λ k => (r,c) + k * d)
+  pure $ (List.range m).map (λ k => l + (k : Int) * d)
 
 example : (wordLocs .all 3 4).length = 0 := by rfl
 example : (wordLocs .all 4 4).length = 20 := by rfl
 example : (wordLocs .all 3 3).length = 16 := by rfl
 
-def index : Input → Int × Int → Char
-  | grid, (r,c) => (grid[r.toNat]!)[c.toNat]!
+def index : Input → V2 Int → Char
+  | grid, ⟨r,c⟩ => (grid[r.toNat]!)[c.toNat]!
 
-def extract (input : Input) (is : List (Int × Int)) : String :=
+def extract (input : Input) (is : List (V2 Int)) : String :=
   String.mk $ is.map (index input)
 
 def solveA (input : Input) : Nat :=
@@ -59,7 +56,7 @@ def solveA (input : Input) : Nat :=
 ------------------------------------------------------------
 -- Part B
 
-def crossing : List (Int × Int) → List (Int × Int) → Bool
+def crossing [DecidableEq α] : List α → List α → Bool
   | [_,b,_], [_,e,_] => b = e
   | _, _ => false
 

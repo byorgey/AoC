@@ -50,7 +50,7 @@ def topSort (r : Rules) (u : Update) : Update :=
 
 def solveB (i : Input) : Nat :=
   i.updates.filter (not ∘ okUpdate i.rules)
-    |> List.map (middle ∘ topSort i.rules)
+    |> List.map (topSort i.rules ▸ middle)
     |> List.sum
 
 ------------------------------------------------------------
