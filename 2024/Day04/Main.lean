@@ -4,12 +4,12 @@ import Mathlib.Data.List.Monad
 ------------------------------------------------------------
 -- Data representation
 
-abbrev Input := Array (Array Char)
+abbrev Input := Grid Char
 
 ------------------------------------------------------------
 -- Parsing
 
-def parse (s : String) : Input := (s.lines.map (List.toArray ∘ String.toList)).toArray
+def parse (s : String) : Input := Grid.ofList $ s.lines.map String.toList
 
 ------------------------------------------------------------
 -- Part A
@@ -27,9 +27,7 @@ def dirs (dt : DirType) : List (V2 Int) := do
   pure $ V2.mk dr dc
 
 def inBounds : Nat → V2 Int → Bool
-  | n, v => 0 ≤ v.x ∧ v.x < n ∧ 0 ≤ v.y ∧ v.y < n
-
-#print HMul
+  | n, v => 0 ≤ v.r ∧ v.r < n ∧ 0 ≤ v.c ∧ v.c < n
 
 def wordLocs (dt : DirType) (n : Nat) (m : Nat) : List (List (V2 Int)) := do
   let d ← dirs dt
@@ -44,14 +42,11 @@ example : (wordLocs .all 3 4).length = 0 := by rfl
 example : (wordLocs .all 4 4).length = 20 := by rfl
 example : (wordLocs .all 3 3).length = 16 := by rfl
 
-def index : Input → V2 Int → Char
-  | grid, ⟨r,c⟩ => (grid[r.toNat]!)[c.toNat]!
-
 def extract (input : Input) (is : List (V2 Int)) : String :=
-  String.mk $ is.map (index input)
+  String.mk $ is.map input.get!
 
 def solveA (input : Input) : Nat :=
-  ((wordLocs .all (input.size) 4).map (extract input)).count "XMAS"
+  ((wordLocs .all input.rows 4).map (extract input)).count "XMAS"
 
 ------------------------------------------------------------
 -- Part B
@@ -61,7 +56,7 @@ def crossing [DecidableEq α] : List α → List α → Bool
   | _, _ => false
 
 def solveB (input : Input) : Nat :=
-  let locs := wordLocs .diag (input.size) 3
+  let locs := wordLocs .diag input.rows 3
   let masLocs := List.filter (λ wl => extract input wl = "MAS") locs
   masLocs.pairs.countP (Function.uncurry crossing)
 
