@@ -19,12 +19,9 @@ abbrev Input := Grid Bool × Guard
 -- Parsing
 
 def parse (s : String) : Input :=
-  let charGrid := s.lines.map String.toList
-  let grid : Grid Bool := Grid.ofList $ charGrid.map (List.map (· ≠ '#'))
-  let guardCols := charGrid.map (λ row => row.findIdx (· = '^'))
-  let guardRow := guardCols.findIdx (· < grid.rows)
-  let guard := Guard.mk (V2.mk guardRow guardCols[guardRow]!) V2.N
-  (grid, guard)
+  let charGrid := Grid.ofList $ s.lines.map String.toList
+  let guard := Guard.mk (charGrid.findIdx? (· = '^')).get! V2.N
+  (charGrid.map (· ≠ '#'), guard)
 
 ------------------------------------------------------------
 -- Part A

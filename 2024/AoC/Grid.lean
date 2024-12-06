@@ -17,9 +17,15 @@ def Grid.ofList (rs : List (List α)) : Grid α :=
              |> HashMap.ofList
   Grid.mk (rs.length) (rs[0]!.length) g
 
+def Grid.map (f : α → β) (g : Grid α) : Grid β :=
+  { g with grid := g.grid.mapVal (λ _ a => f a) }
+
 def Grid.get! [Inhabited α] (g : Grid α) (i : V2 Int) : α := g.grid.find! i
 
 def Grid.get? (g : Grid α) (i : V2 Int) : Option α := g.grid.find? i
+
+def Grid.findIdx? (g : Grid α) (p : α → Bool) : Option (V2 Int) :=
+  (g.grid.toList.find? (p ∘ Prod.snd)).map Prod.fst
 
 def Grid.insert (g : Grid α) (i : V2 Int) (a : α) : Grid α :=
   Grid.mk g.rows g.cols (g.grid.insert i a)

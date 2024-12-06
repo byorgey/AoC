@@ -1,7 +1,7 @@
 structure V2 (α : Type) where
   r : α
   c : α
-deriving Repr, DecidableEq, Hashable
+deriving Repr, DecidableEq, Hashable, Inhabited
 
 instance [Coe α β] : Coe (V2 α) (V2 β) where
   coe p := V2.mk (↑ p.r) (↑ p.c)
