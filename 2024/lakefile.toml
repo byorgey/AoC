@@ -1,6 +1,5 @@
-name = "AoC2024"
+name = "AoC"
 version = "0.1.0"
-defaultTargets = ["aoc2024_01"]
 
 [[require]]
 name = "batteries"
@@ -17,7 +16,7 @@ name = "mathlib"
 scope = "leanprover-community"
 
 [[lean_lib]]
-name = "AoC2024"
+name = "AoC"
 
 [[lean_exe]]
 name = "aoc2024_01"

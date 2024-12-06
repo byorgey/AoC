@@ -1,4 +1,4 @@
-import AoC2024
+import AoC
 import Batteries.Data.HashMap
 
 open Batteries

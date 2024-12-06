@@ -1,4 +1,4 @@
-import AoC2024
+import AoC
 
 def splitPair (s : String) : Nat × Nat :=
   match s.words with
