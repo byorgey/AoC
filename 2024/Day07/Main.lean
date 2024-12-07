@@ -29,8 +29,6 @@ def interpOp : Operator → (Nat → Nat → Nat)
   | .mul => (· * ·)
   | .cat => (λ x y => (x.repr.append y.repr).toNat!)
 
-def operators : List Operator := [.add, .mul]
-
 -- TODO: convince Lean this is terminating?
 partial def outcomes : List Operator → List Nat → List Nat
   | _, [] => []
@@ -61,6 +59,6 @@ def solveB : Input → Nat := solve [.add, .mul, .cat]
 -- main
 
 def main : IO Unit := do
-  let input <- parse <$> IO.FS.readFile "Day07/example"
+  let input <- parse <$> IO.FS.readFile "Day07/input"
   IO.println s!"{solveA input}"
   IO.println s!"{solveB input}"
