@@ -1,4 +1,4 @@
-import AoC2024
+import AoC
 
 ------------------------------------------------------------
 -- Data representation
