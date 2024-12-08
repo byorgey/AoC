@@ -29,15 +29,15 @@ def interpOp : Operator → (Nat → Nat → Nat)
   | .mul => (· * ·)
   | .cat => (λ x y => (x.repr.append y.repr).toNat!)
 
--- TODO: convince Lean this is terminating?
-partial def outcomes : List Operator → List Nat → List Nat
+def outcomes : List Operator → List Nat → List Nat
   | _, [] => []
   | _, [a] => [a]
   | ops, a :: b :: cs => do
       let op ← ops
       outcomes ops (interpOp op a b :: cs)
+termination_by _ ns => ns.length
 
-partial def satisfiable : List Operator → Equation → Bool
+def satisfiable : List Operator → Equation → Bool
   | ops, (lhs, xs) => (outcomes ops xs).elem lhs
 
 def solve (ops : List Operator) (i : Input) : Nat :=
