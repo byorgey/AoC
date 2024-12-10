@@ -30,3 +30,7 @@ def iter (n : Nat) (f : α → Option α) (a : α) : List α :=
     | 0, _ => []
     | _, none => []
     | n' + 1, some a' => iter n' f a'
+
+-- Copied from Mathlib.Data.Int.Range
+def Int.range (a : Int) (b : Int) : List Int :=
+  (List.range (toNat (b - a))).map λ (r : Nat) => (a + r : Int)
