@@ -24,6 +24,9 @@ instance [Mul α] : HMul α (V2 α) (V2 α) where
 instance [Div α] : HDiv (V2 α) α (V2 α) where
   hDiv p k := { r := p.r / k, c := p.c / k }
 
+instance [ToString α] : ToString (V2 α) where
+  toString v := "(" ++ toString (v.r) ++ ", " ++ toString (v.c) ++ ")"
+
 def V2.rt [Neg α] (v : V2 α) : V2 α := { r := v.c, c := -v.r }
 
 def V2.lt [Neg α] (v : V2 α) : V2 α := { r := -v.c, c := v.r }
