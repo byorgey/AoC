@@ -19,22 +19,22 @@ def rule : Nat → List Nat
       let m := ns.length
       if m.mod 2 = 0 then
         let (x,y) := ns.splitAt (m / 2)
-        [Nat.ofDigits y, Nat.ofDigits x]
+        [y, x].map Nat.ofDigits
       else
         [n*2024]
 
 abbrev Stones := HashMap Nat Nat
 
 def blink (stones : Stones) : Stones :=
-  HashMap.ofListWith (stones.toList.flatMap ruleN) (· + ·)
+  HashMap.ofListWith (stones.toList.flatMap ruleN) (·+·)
   where
     ruleN : (Nat × Nat) → List (Nat × Nat)
-      | (stone, count) => (rule stone).map (λ s' => (s', count))
+      | (stone, count) => (rule stone).map (·,count)
 
 def solve (n : Nat) (stones : Input) : Nat :=
-  let stonesMap := HashMap.ofListWith (stones.map (λ s => (s,1))) (· + ·)
+  let stonesMap := HashMap.ofListWith (stones.map (·,1)) (·+·)
   stonesMap
-    |> (blink ^ n)
+    |> blink ^ n
     |> HashMap.toList
     |> List.map Prod.snd
     |> List.sum
