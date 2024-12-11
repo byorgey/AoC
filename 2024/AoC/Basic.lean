@@ -36,3 +36,16 @@ def Int.range (a : Int) (b : Int) : List Int :=
   (List.range (toNat (b - a))).map λ (r : Nat) => (a + r : Int)
 
 def Char.toDigit (c : Char) : Nat := c.toNat - '0'.toNat
+
+def Nat.digits : Nat → List Nat
+  | 0 => []
+  | (n+1) => (n+1).mod 10 :: ((n+1) / 10).digits
+
+def Nat.ofDigits (ds : List Nat) : Nat := ds.foldr (λ d n => 10*n + d) 0
+
+def funPow : (α → α) → Nat → (α → α)
+  | _, 0 => id
+  | f, n+1 => funPow f n ∘ f
+
+instance : HPow (α → α) Nat (α → α) where
+  hPow := funPow
