@@ -41,4 +41,7 @@ def Grid.keys (g : Grid α) : List (V2 Int) := g.toList.map Prod.fst
 def Grid.values (g : Grid α) : List α := g.toList.map Prod.snd
 
 def Grid.neighbors4 (g : Grid α) (i : V2 Int) : List (V2 Int)
-  := ([V2.N, V2.E, V2.S, V2.W].map (i + ·)).filter g.contains
+  := i.neighbors4.filter g.contains
+
+def Grid.neighbors8 (g : Grid α) (i : V2 Int) : List (V2 Int)
+  := i.neighbors8.filter g.contains

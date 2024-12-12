@@ -35,3 +35,15 @@ def V2.N : V2 Int := V2.mk (-1) 0
 def V2.E : V2 Int := V2.mk 0 1
 def V2.S : V2 Int := V2.mk 1 0
 def V2.W : V2 Int := V2.mk 0 (-1)
+def V2.NE : V2 Int := V2.N + V2.E
+def V2.SE : V2 Int := V2.S + V2.E
+def V2.SW : V2 Int := V2.S + V2.W
+def V2.NW : V2 Int := V2.N + V2.W
+
+def V2.cardinals : List (V2 Int) := [V2.N, V2.E, V2.S, V2.W]
+
+def V2.neighbors4 (v : V2 Int) : List (V2 Int) :=
+  V2.cardinals.map (v + ·)
+
+def V2.neighbors8 (v : V2 Int) : List (V2 Int) :=
+  [V2.N, V2.NE, V2.E, V2.SE, V2.S, V2.SW, V2.W, V2.NW].map (v + ·)
