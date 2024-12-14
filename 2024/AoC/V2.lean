@@ -24,8 +24,16 @@ instance [Mul α] : HMul α (V2 α) (V2 α) where
 instance [Div α] : HDiv (V2 α) α (V2 α) where
   hDiv p k := { r := p.r / k, c := p.c / k }
 
+instance [Mod α] : HMod (V2 α) (V2 α) (V2 α) where
+  hMod p q := { r := p.r % q.r, c := p.c % q.c }
+
 instance [ToString α] : ToString (V2 α) where
   toString v := "(" ++ toString (v.r) ++ ", " ++ toString (v.c) ++ ")"
+
+def V2.map (v : V2 α) (f : α → β) : V2 β :=
+  { r := f v.r, c := f v.c }
+
+def V2.all (v : V2 α) (p : α → Bool) : Bool := p v.r ∧ p v.c
 
 def V2.rt [Neg α] (v : V2 α) : V2 α := { r := v.c, c := -v.r }
 

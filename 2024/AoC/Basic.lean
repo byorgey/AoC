@@ -1,4 +1,5 @@
 import Std.Data.HashSet
+import Batteries.Data.HashMap
 open Std
 
 def String.lines (s : String) : List String :=
@@ -8,6 +9,9 @@ def String.lines (s : String) : List String :=
     | [] => []
     | [ "" ] => []
     | x :: xs => x :: dropFinalEmpty xs
+
+def List.unlines (ls : List String) : String :=
+  "\n".intercalate ls ++ "\n"
 
 -- Split a string into words on whitespace
 def String.words (s : String) : List String :=
@@ -47,5 +51,10 @@ def funPow : (α → α) → Nat → (α → α)
   | _, 0 => id
   | f, n+1 => funPow f n ∘ f
 
-instance : HPow (α → α) Nat (α → α) where
-  hPow := funPow
+instance : NatPow (α → α) where
+  pow := funPow
+
+def List.cardinality [BEq α] [Hashable α] (xs : List α) : Batteries.HashMap α Nat :=
+  Batteries.HashMap.ofListWith (xs.map (·,1)) (·+·)
+
+def List.prod : List Nat → Nat := foldr (· * ·) 1
