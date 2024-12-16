@@ -8,6 +8,7 @@ structure Grid (α : Type) where
   rows : Nat
   cols : Nat
   grid : HashMap (V2 Int) α
+deriving Inhabited
 
 def Grid.ofList (rs : List (List α)) : Grid α :=
   let g : HashMap (V2 Int) α := rs
