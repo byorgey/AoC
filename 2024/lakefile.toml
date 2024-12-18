@@ -77,3 +77,6 @@ root = "Day14.Main"
 [[lean_exe]]
 name = "aoc2024_16"
 root = "Day16.Main"
+[[lean_exe]]
+name = "aoc2024_18"
+root = "Day18.Main"
