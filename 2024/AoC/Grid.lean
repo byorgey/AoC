@@ -53,3 +53,13 @@ def Grid.neighbors4 (g : Grid α) (i : V2 Int) : List (V2 Int)
 
 def Grid.neighbors8 (g : Grid α) (i : V2 Int) : List (V2 Int)
   := i.neighbors8.filter g.contains
+
+------------------------------------------------------------
+
+instance : ToString (Grid Char) where
+  toString g :=
+    let cs :=
+      (List.range g.rows).map $ λ (r : Nat) =>
+        (List.range g.cols).map $ λ (c : Nat) =>
+          (g.get? (V2.mk r c)).getD ' '
+    (cs.map String.mk).unlines
