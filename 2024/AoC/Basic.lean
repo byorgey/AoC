@@ -52,6 +52,10 @@ def Nat.digits : Nat → List Nat
 
 def Nat.ofDigits (ds : List Nat) : Nat := ds.foldr (λ d n => 10*n + d) 0
 
+def Nat.absdiff (x y : Nat) : Nat := (↑x - ↑y : Int).natAbs
+
+def Int.absdiff (x y : Int) : Nat := (x - y).natAbs
+
 def funPow : (α → α) → Nat → (α → α)
   | _, 0 => id
   | f, n+1 => funPow f n ∘ f
@@ -63,3 +67,21 @@ def List.cardinality [BEq α] [Hashable α] (xs : List α) : Batteries.HashMap �
   Batteries.HashMap.ofListWith (xs.map (·,1)) (·+·)
 
 def List.prod : List Nat → Nat := foldr (· * ·) 1
+
+------------------------------------------------------------
+-- List comprehensions
+-- Adapted from https://github.com/leanprover-community/lean4-samples/blob/main/ListComprehension/README.md
+
+declare_syntax_cat compClause
+syntax "for " term " in " term : compClause
+syntax "if " term : compClause
+syntax "let " term " := " term : compClause
+
+syntax "[" term " | " compClause,* "]" : term
+
+macro_rules
+  | `([$t:term |]) => `([$t])
+  | `([$t:term | for $x in $xs]) => `(List.map (λ $x => $t) $xs)
+  | `([$t:term | if $x]) => `(if $x then [$t] else [])
+  | `([$t:term | let $x := $e]) => `((λ $x => [$t]) $e)
+  | `([$t:term | $c, $cs,*]) => `(List.flatten [[$t | $cs,*] | $c])

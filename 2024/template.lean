@@ -18,7 +18,7 @@ def solveA (i : Input) : Nat := sorry
 ------------------------------------------------------------
 -- Part B
 
-def solveB (is : Input) : Nat := sorry
+def solveB (i : Input) : Nat := sorry
 
 ------------------------------------------------------------
 -- main

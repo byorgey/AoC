@@ -1,3 +1,5 @@
+import AoC.Basic
+
 structure V2 (α : Type) where
   r : α
   c : α
@@ -55,3 +57,6 @@ def V2.neighbors4 (v : V2 Int) : List (V2 Int) :=
 
 def V2.neighbors8 (v : V2 Int) : List (V2 Int) :=
   [V2.N, V2.NE, V2.E, V2.SE, V2.S, V2.SW, V2.W, V2.NW].map (v + ·)
+
+def V2.manhattan (p q : V2 Int) : Nat :=
+  p.r.absdiff q.r + p.c.absdiff q.c
