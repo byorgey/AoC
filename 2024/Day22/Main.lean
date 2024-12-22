@@ -55,4 +55,4 @@ def solveB (i : Input) : Nat :=
 def main : IO Unit := do
   let input <- parse <$> IO.FS.readFile "Day22/input"
   IO.println s!"{solveA input}"
-  -- IO.println s!"{solveB input}"
+  IO.println s!"{solveB input}"
