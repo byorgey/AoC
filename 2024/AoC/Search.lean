@@ -25,7 +25,9 @@ structure SSSP (α : Type) (γ : Type) [BEq α] [Hashable α] where
 ------------------------------------------------------------
 -- BFS
 
-def BFS [BEq α] [Hashable α] (start : List α) (neighbors : α → List α) : SSSP α Nat := Id.run do
+def BFS [BEq α] [Hashable α]
+  (start : List α) (neighbors : α → List α)
+  (goal : α → Bool := λ _ => false) : SSSP α Nat := Id.run do
   let mut parents : HashMap α (List α) := HashMap.empty
   let mut level : HashMap α Nat := HashMap.ofList (start.map (λ v => (v,0)))
   let mut q : Std.Queue α := Std.Queue.empty
@@ -37,6 +39,8 @@ def BFS [BEq α] [Hashable α] (start : List α) (neighbors : α → List α) : 
     | none => pure ()
     | some (u, q') => do
       q := q'
+
+      if goal u then break
 
       for v in neighbors u do
         if !level.contains v then
