@@ -38,8 +38,7 @@ def Grid.insert (g : Grid α) (i : V2 Int) (a : α) : Grid α :=
 def Grid.erase (g : Grid α) (i : V2 Int) : Grid α :=
   { g with grid := g.grid.erase i }
 
-def Grid.contains (g : Grid α) (i : V2 Int) : Bool :=
-  0 ≤ i.r ∧ i.r < g.rows ∧ 0 ≤ i.c ∧ i.c < g.cols
+def Grid.contains (g : Grid α) (i : V2 Int) : Bool := g.grid.contains i
 
 def Grid.toList (g : Grid α) : List (V2 Int × α) := g.grid.toList
 
