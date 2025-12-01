@@ -99,6 +99,10 @@ name = "aoc2024_20"
 root = "Day20.Main"
 
 [[lean_exe]]
+name = "aoc2024_21"
+root = "Day21.Main"
+
+[[lean_exe]]
 name = "aoc2024_22"
 root = "Day22.Main"
 
@@ -109,3 +113,7 @@ root = "Day23.Main"
 [[lean_exe]]
 name = "aoc2024_24"
 root = "Day24.Main"
+
+[[lean_exe]]
+name = "aoc2024_25"
+root = "Day25.Main"
