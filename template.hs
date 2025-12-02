@@ -1,5 +1,5 @@
 #!/usr/bin/env stack
--- stack --resolver lts-19.28 script --package containers --package split --package array
+-- stack --resolver lts-24.21 script --package containers --package split --package array
 
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE ImportQualifiedPost #-}
@@ -8,7 +8,7 @@
 {-# LANGUAGE TupleSections #-}
 
 import Control.Applicative
-import Control.Arrow ((>>>))
+import Control.Arrow (second, (***), (>>>))
 
 -- import           Control.Lens
 -- import           Control.Monad.State
