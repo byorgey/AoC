@@ -2,7 +2,9 @@
 -- stack --resolver lts-24.21 script --package containers --package split --package array
 
 import Control.Arrow ((>>>))
+import Control.Monad (guard)
 import Data.Array.Unboxed
+import Data.Functor (($>))
 import Data.List (unfoldr)
 
 main =
@@ -20,8 +22,8 @@ readInput = lines >>> map (map (== '@')) >>> mkArray
 type Output = Int
 
 solveA, solveB :: Grid -> Output
-solveA grid = count (isAccessible grid) (filter (grid !) $ range (bounds grid))
-solveB grid = sum . map (\g -> count (isRemovable g) (range (bounds grid))) . unfoldr remove $ grid
+solveA grid = count (isAccessible grid) . filter (grid !) . ixs $ grid
+solveB = sum . unfoldr remove
 
 isAccessible :: Grid -> Coord -> Bool
 isAccessible grid = (< 4) . count (grid !) . inGrid grid . neighbors8
@@ -29,12 +31,10 @@ isAccessible grid = (< 4) . count (grid !) . inGrid grid . neighbors8
 isRemovable :: Grid -> Coord -> Bool
 isRemovable grid i = grid ! i && isAccessible grid i
 
-remove :: Grid -> Maybe (Grid, Grid)
-remove grid
-  | c > 0 = Just (grid, iamap (\i a -> a && not (isAccessible grid i)) grid)
-  | otherwise = Nothing
+remove :: Grid -> Maybe (Int, Grid)
+remove grid = guard (c > 0) $> (c, iamap (\i a -> a && not (isAccessible grid i)) grid)
  where
-  c = count (isRemovable grid) (range (bounds grid))
+  c = count (isRemovable grid) (ixs grid)
 
 ------------------------------------------------------------
 -- Utilities
@@ -55,6 +55,8 @@ right (r, c) = (r, c + 1)
 
 mkArray :: IArray UArray a => [[a]] -> UArray Coord a
 mkArray rows@(r : _) = listArray ((0, 0), (length rows - 1, length r - 1)) (concat rows)
+
+ixs = range . bounds
 
 iamap :: (Ix i, IArray UArray a) => (i -> a -> a) -> UArray i a -> UArray i a
 iamap f a = listArray (bounds a) (map (uncurry f) (assocs a))
