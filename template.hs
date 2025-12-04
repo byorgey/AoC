@@ -139,20 +139,23 @@ i1 ⊆ i2 = i1 ∪ i2 == i2
 
 type Coord = (Int, Int)
 
-above, below, left, right :: Coord -> Coord
+above, below, lt, rt :: Coord -> Coord
 above (r, c) = (r - 1, c)
 below (r, c) = (r + 1, c)
-left (r, c) = (r, c - 1)
-right (r, c) = (r, c + 1)
+lt (r, c) = (r, c - 1)
+rt (r, c) = (r, c + 1)
 
--- mkArray :: IArray UArray a => [[a]] -> UArray Coord a
--- mkArray rows = listArray ((0,0), (length rows - 1, length (head rows) - 1)) (concat rows)
+mkArray :: IArray UArray a => [[a]] -> UArray Coord a
+mkArray rows@(r : _) = listArray ((0, 0), (length rows - 1, length r - 1)) (concat rows)
 
 neighbors :: Coord -> [Coord]
-neighbors = applyAll [above, below, left, right]
+neighbors = applyAll [above, below, lt, rt]
 
-neighborsIn :: IArray UArray a => UArray Coord a -> Coord -> [Coord]
-neighborsIn a = filter (inRange (bounds a)) . neighbors
+neighbors8 :: Coord -> [Coord]
+neighbors8 = applyAll [above, below, lt, rt, above . lt, above . rt, below . lt, below . rt]
+
+inGrid :: IArray UArray a => UArray Coord a -> [Coord] -> [Coord]
+inGrid = filter . inRange . bounds
 
 zipWithL :: (a -> a -> a) -> [a] -> [a] -> [a]
 zipWithL _ [] ys = ys
