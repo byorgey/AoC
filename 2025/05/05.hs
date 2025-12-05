@@ -22,11 +22,10 @@ readRange = splitOn "-" >>> map read >>> toPair >>> uncurry I
 type Output = Int
 
 solveA, solveB :: Input -> Output
-solveA (Input rs is) = count (\i -> any (`containsI` i) rs) is
+solveA (Input rs is) = count (\i -> any (i ∈) rs) is
 solveB (Input rs is) = rs >$> foldr insertRange [] >>> map sizeI >>> sum
 
 insertRange :: Interval -> [Interval] -> [Interval]
-insertRange i js | isEmpty i = js
 insertRange i [] = [i]
 insertRange i (j : js)
   | not (isEmpty (i ∩ j)) = insertRange (i ∪ j) js
@@ -69,8 +68,8 @@ i1 ⊆ i2 = i1 ∪ i2 == i2
 singletonI :: Int -> Interval
 singletonI i = I i i
 
-containsI :: Interval -> Int -> Bool
-containsI i x = singletonI x ⊆ i
+(∈) :: Int -> Interval -> Bool
+x ∈ i = singletonI x ⊆ i
 
 sizeI :: Interval -> Int
 sizeI (I l h) = h - l + 1

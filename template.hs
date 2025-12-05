@@ -126,6 +126,15 @@ isEmpty (I l h) = l > h
 (⊆) :: Interval -> Interval -> Bool
 i1 ⊆ i2 = i1 ∪ i2 == i2
 
+singletonI :: Int -> Interval
+singletonI i = I i i
+
+(∈) :: Int -> Interval -> Bool
+x ∈ i = singletonI x ⊆ i
+
+sizeI :: Interval -> Int
+sizeI (I l h) = h - l + 1
+
 -- toTable :: Ix i => (i, i) -> (i -> a) -> Array i a
 -- toTable rng f = array rng (map (id &&& f) (range rng))
 
