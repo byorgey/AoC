@@ -148,6 +148,9 @@ rt (r, c) = (r, c + 1)
 mkArray :: IArray UArray a => [[a]] -> UArray Coord a
 mkArray rows@(r : _) = listArray ((0, 0), (length rows - 1, length r - 1)) (concat rows)
 
+ixs :: (Ix i, IArray a e) => a i e -> [i]
+ixs = range . bounds
+
 neighbors :: Coord -> [Coord]
 neighbors = applyAll [above, below, lt, rt]
 
