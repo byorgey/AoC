@@ -23,7 +23,7 @@ type Output = Int
 
 solveA, solveB :: Input -> Output
 solveA (Input rs is) = count (\i -> any (i ∈) rs) is
-solveB (Input rs is) = rs >$> foldr insertRange [] >>> map sizeI >>> sum
+solveB (Input rs _) = rs >$> foldr insertRange [] >>> map sizeI >>> sum
 
 insertRange :: Interval -> [Interval] -> [Interval]
 insertRange i [] = [i]
@@ -36,10 +36,6 @@ insertRange i (j : js)
 
 infixr 0 >$>
 (>$>) = flip ($)
-
-pairs :: [a] -> [(a, a)]
-pairs [] = []
-pairs (x : xs) = map (x,) xs ++ pairs xs
 
 count :: (a -> Bool) -> [a] -> Int
 count p = filter p >>> length
