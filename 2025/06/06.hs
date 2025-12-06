@@ -2,6 +2,7 @@
 -- stack --resolver lts-24.21 script --package containers --package split --package array
 
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE ViewPatterns #-}
 
 import Control.Arrow ((>>>))
 import Data.Char (isSpace)
@@ -26,19 +27,10 @@ readInputA = lines >>> map words >>> transpose >>> map readProblem
   readProblem ws = Problem (map read (init ws)) (last ws)
 
 readInputB :: String -> Input
-readInputB i = zipWith Problem ns os
+readInputB (lines -> ls) = zipWith Problem nums ops
  where
-  ls = lines i
-  ds = init ls
-  os = words (last ls)
-
-  ns = ds >$> transpose >>> splitWhen (all (== ' ')) >>> map (map (trim >>> read))
-
-trim :: String -> String
-trim = d . r . d . r
- where
-  r = reverse
-  d = dropWhile isSpace
+  ops = words (last ls)
+  nums = ls >$> init >>> transpose >>> splitWhen (all (== ' ')) >>> map (map (dropWhile isSpace >>> read))
 
 ------------------------------------------------------------
 -- Evaluation
