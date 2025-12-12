@@ -1,11 +1,14 @@
 #!/usr/bin/env stack
--- stack --resolver lts-24.21 script --package containers --package split --package array
+-- stack --resolver lts-24.21 script --package containers --package split --package array --package limp-cbc --package limp
 
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE TupleSections #-}
+
+import Numeric.Limp.Program
+import Numeric.Limp.Rep
 
 import Control.Applicative
 import Control.Arrow (second, (***), (>>>))
@@ -102,7 +105,17 @@ solveMachineA (Machine ls bs _) = pred . length $ bfs (== ls) next (S.singleton 
 -- check if there is a solution or not.  Hmm, but binary search
 -- doesn't work though, since this is not monotonic...
 
-solveMachineB = undefined
+-- DFS, greedily choosing biggest button possible at each step ---
+-- doesn't give correct result.
+
+-- solveMachineB (Machine _ bs js) = length . head $ dfs (== js) next (map (const 0) js)
+--  where
+--   bs' = sortBy (comparing (Down . length)) bs -- prefer bigger buttons
+--   buttonCounters = map (elems . accumArray @UArray (\_ y -> y) 0 (0, length js - 1) . map (,1)) bs'
+--   next m = S.fromList . filter ok $ map (zipWith (+) m) buttonCounters
+--   ok cs = and (zipWith (<=) cs js)
+
+solveMachineB (Machine _ bs js) = 0
 
 ------------------------------------------------------------
 -- Utilities
