@@ -1,47 +1,29 @@
 #!/usr/bin/env stack
--- stack --resolver lts-24.21 script --package containers --package split --package array --package limp-cbc --package limp
+-- stack --resolver lts-24.21 script --package containers --package split --package array --package MIP --package OptDir --package bytestring-encoding --package text
 
-{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE ImportQualifiedPost #-}
-{-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections #-}
 
-import Numeric.Limp.Program
-import Numeric.Limp.Rep
-
-import Control.Applicative
-import Control.Arrow (second, (***), (>>>))
-
--- import           Control.Lens
--- import           Control.Monad.State
--- import           Control.Monad.Writer
-import Data.Array.Unboxed
+import Control.Arrow ((>>>))
 import Data.Bits
-import Data.Char
-import Data.Function
-import Data.List
-import Data.List.Split
+import Data.List.Split (splitOn)
 import Data.Map (Map)
 import Data.Map.Strict qualified as M
-import Data.Maybe
-import Data.Ord
+import Data.Maybe (fromMaybe)
 import Data.Set (Set)
 import Data.Set qualified as S
-import Data.Tuple
+import Data.Text qualified as T
+import Numeric.Optimization.MIP ((.==.))
+import Numeric.Optimization.MIP qualified as MIP
+import Numeric.Optimization.MIP.Solver
 
--- import           Text.Parsec          hiding (State)
--- import           Text.Parsec.String
-import Text.Printf
+main = do
+  input <- readInput <$> getContents
+  print $ solveA input
 
-import Debug.Trace
-
-main =
-  interact $
-    readInput
-      >>> applyAll [solveA, solveB]
-      >>> map show
-      >>> unlines
+  resB <- solveB input
+  print resB
 
 type Lights = Integer
 type Input = [Machine]
@@ -64,15 +46,20 @@ readMachine s = Machine (readLights w) (map readButton (init ws)) (readJoltage (
 
 type Output = Int
 
-solveA, solveB :: Input -> Output
+------------------------------------------------------------
+-- Part A solution
+
+solveA :: Input -> Output
 solveA = map solveMachineA >>> sum
-solveB = map solveMachineB >>> sum
 
 -- Part A: BFS over bitvectors.  Search space is at most 2^10.
 solveMachineA (Machine ls bs _) = pred . length $ bfs (== ls) next (S.singleton 0)
  where
   buttonLights = bs >$> map (map (1 `shiftL`) >>> foldl' (.|.) 0)
   next m = S.fromList $ map (m `xor`) buttonLights
+
+------------------------------------------------------------
+-- Part B failed attempts
 
 -- Initial attempt via BFS, took forever and used up all my memory.
 -- This makes sense, actually: if we have 10 counters each trying to
@@ -115,7 +102,36 @@ solveMachineA (Machine ls bs _) = pred . length $ bfs (== ls) next (S.singleton 
 --   next m = S.fromList . filter ok $ map (zipWith (+) m) buttonCounters
 --   ok cs = and (zipWith (<=) cs js)
 
-solveMachineB (Machine _ bs js) = 0
+------------------------------------------------------------
+-- Part B solution
+
+-- Finally found a good Haskell library for mixed integer programming,
+-- once I figured out the right keywords to search for.
+
+solveB :: Input -> IO Output
+solveB ms = sum <$> mapM solveMachineB ms
+
+solveMachineB :: Machine -> IO Output
+solveMachineB (Machine _ bs js) = do
+  let -- xi = how many times we should push button i
+      xsN = map (MIP.Var . ("x" <>) . T.pack . show) [0 .. length bs - 1]
+      xs = map MIP.varExpr xsN
+
+      counterConstraint j c = sum (map fst . filter ((j `elem`) . snd) $ zip xs bs) .==. fromIntegral c
+
+      prob =
+        MIP.def
+          { MIP.objectiveFunction =
+              MIP.def
+                { MIP.objDir = MIP.OptMin
+                , MIP.objExpr = sum xs
+                }
+          , MIP.constraints = zipWith counterConstraint [0 ..] js
+          , MIP.varDomains = M.fromList (map (,(MIP.IntegerVariable, (0, MIP.PosInf))) xsN)
+          }
+
+  sol <- solve cbc MIP.def {solveTimeLimit = Just 1.0} prob
+  pure (round (fromMaybe 0 (MIP.solObjectiveValue sol)))
 
 ------------------------------------------------------------
 -- Utilities
@@ -131,132 +147,8 @@ bfs isGoal next = bfs' S.empty
     layer' = foldMap next layer `S.difference` seen'
     seen' = S.union seen layer
 
-dfs :: Ord a => (a -> Bool) -> (a -> S.Set a) -> a -> [[a]]
-dfs winning fnext start = dfs' S.empty [start] start
- where
-  dfs' visited path cur
-    | winning cur = [path]
-    | otherwise = concatMap (\n -> dfs' (S.insert n visited) (n : path) n) next
-   where
-    next = fnext cur
-
-uncurryL :: (a -> a -> b) -> [a] -> b
-uncurryL f [x, y] = f x y
-
-pairs :: [a] -> [(a, a)]
-pairs [] = []
-pairs (x : xs) = map (x,) xs ++ pairs xs
-
-choose :: Int -> [a] -> [[a]]
-choose 0 _ = [[]]
-choose _ [] = []
-choose k (x : xs) = map (x :) (choose (k - 1) xs) ++ choose k xs
-
-count :: (a -> Bool) -> [a] -> Int
-count p = filter p >>> length
-
-cardinality :: Ord a => [a] -> Map a Int
-cardinality = map (,1) >>> M.fromListWith (+)
-
 applyAll :: [a -> b] -> a -> [b]
 applyAll fs a = map ($ a) fs
 
-takeUntil :: (a -> Bool) -> [a] -> [a]
-takeUntil _ [] = []
-takeUntil p (x : xs)
-  | p x = [x]
-  | otherwise = x : takeUntil p xs
-
-toPair :: [a] -> (a, a)
-toPair [x, y] = (x, y)
-
-onHead :: (a -> a) -> [a] -> [a]
-onHead _ [] = []
-onHead f (a : as) = f a : as
-
-find' :: (a -> Bool) -> [a] -> a
-find' p = find p >>> fromJust
-
 infixr 0 >$>
 (>$>) = flip ($)
-
-data Interval = I {lo :: Int, hi :: Int} deriving (Eq, Ord, Show)
-
-(∪), (∩) :: Interval -> Interval -> Interval
-I l1 h1 ∪ I l2 h2 = I (min l1 l2) (max h1 h2)
-I l1 h1 ∩ I l2 h2 = I (max l1 l2) (min h1 h2)
-
-isEmpty :: Interval -> Bool
-isEmpty (I l h) = l > h
-
-(⊆) :: Interval -> Interval -> Bool
-i1 ⊆ i2 = i1 ∪ i2 == i2
-
-singletonI :: Int -> Interval
-singletonI i = I i i
-
-(∈) :: Int -> Interval -> Bool
-x ∈ i = singletonI x ⊆ i
-
-sizeI :: Interval -> Int
-sizeI (I l h) = h - l + 1
-
--- toTable :: Ix i => (i, i) -> (i -> a) -> Array i a
--- toTable rng f = array rng (map (id &&& f) (range rng))
-
--- memo :: Ix i => (i,i) -> (i -> a) -> (i -> a)
--- memo rng = (!) . toTable rng
-
--- memoFix :: Ix i => (i,i) -> ((i -> a) -> (i -> a)) -> (i -> a)
--- memoFix rng f = fix (memo rng . f)
-
--- readParser p = parse p "" >>> either undefined id
-
-type Coord = (Int, Int)
-
-above, below, lt, rt :: Coord -> Coord
-above (r, c) = (r - 1, c)
-below (r, c) = (r + 1, c)
-lt (r, c) = (r, c - 1)
-rt (r, c) = (r, c + 1)
-
-mkArray :: IArray UArray a => [[a]] -> UArray Coord a
-mkArray rows@(r : _) = listArray ((0, 0), (length rows - 1, length r - 1)) (concat rows)
-
-ixs :: (Ix i, IArray a e) => a i e -> [i]
-ixs = range . bounds
-
-neighbors :: Coord -> [Coord]
-neighbors = applyAll [above, below, lt, rt]
-
-neighbors8 :: Coord -> [Coord]
-neighbors8 = applyAll [above, below, lt, rt, above . lt, above . rt, below . lt, below . rt]
-
-inGrid :: IArray UArray a => UArray Coord a -> [Coord] -> [Coord]
-inGrid = filter . inRange . bounds
-
-zipWithL :: (a -> a -> a) -> [a] -> [a] -> [a]
-zipWithL _ [] ys = ys
-zipWithL _ xs [] = xs
-zipWithL f (x : xs) (y : ys) = f x y : zipWithL f xs ys
-
-zipSum :: [[Int]] -> [Int]
-zipSum [] = []
-zipSum ([] : xss) = 0 : zipSum xss
-zipSum ((x : xs) : xss) = x : zipWithL (+) xs (zipSum xss)
-
--- Floyd's cycle-finding algorithm.  floyd f x0 returns the smallest
--- (μ, λ) such that (s !! (μ + i) == s !! (μ + i + λ)) for all i >= 0
--- where s = iterate f x0.
-floyd :: Eq a => (a -> a) -> a -> (Int, Int)
-floyd f x0 = (μ, λ)
- where
-  tortoiseHare = f *** (f . f)
-  step = f *** f
-
-  findMatch :: Eq a => ((a, a) -> (a, a)) -> (a, a) -> (Int, a)
-  findMatch g = iterate g >>> zip [0 ..] >>> find' (snd >>> uncurry (==)) >>> second fst
-
-  (_, xν) = findMatch tortoiseHare (tortoiseHare (x0, x0))
-  (μ, xμ) = findMatch step (x0, xν)
-  λ = succ . fromJust $ elemIndex xμ (iterate f (f xμ))
